@@ -1,0 +1,50 @@
+﻿PokerStars Hand #223691940887:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/11 19:43:22 WET [2021/02/11 14:43:22 ET]
+Table 'Naef IV' 9-max Seat #3 is the button
+Seat 1: 0warren0 ($0.80 in chips) 
+Seat 2: HEISE 65 ($1.33 in chips) 
+Seat 3: eglyakov ($1.84 in chips) 
+Seat 4: TeuFe1e4ek89 ($1.17 in chips) 
+Seat 5: VMati ($0.20 in chips) 
+Seat 6: in-yanspb ($2.08 in chips) 
+Seat 8: perec2 ($2 in chips) 
+Seat 9: bobsondugnutt11 ($1.32 in chips) 
+TeuFe1e4ek89: posts small blind $0.01
+VMati: posts big blind $0.02
+TR@BU: sits out 
+0warren0: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to bobsondugnutt11 [Ts Tc]
+in-yanspb: folds 
+perec2: folds 
+bobsondugnutt11: calls $0.02
+0warren0: raises $0.02 to $0.04
+HEISE 65: folds 
+eglyakov: folds 
+TeuFe1e4ek89: folds 
+VMati: calls $0.02
+bobsondugnutt11: raises $0.02 to $0.06
+0warren0: calls $0.02
+VMati: calls $0.02
+*** FLOP *** [Qs Kh 6c]
+VMati: checks 
+bobsondugnutt11: bets $0.18
+0warren0: folds 
+VMati: calls $0.14 and is all-in
+Uncalled bet ($0.04) returned to bobsondugnutt11
+*** TURN *** [Qs Kh 6c] [3h]
+*** RIVER *** [Qs Kh 6c 3h] [4d]
+*** SHOW DOWN ***
+VMati: shows [Jd Kd] (a pair of Kings)
+bobsondugnutt11: shows [Ts Tc] (a pair of Tens)
+VMati cashed out the hand for $0.41
+*** SUMMARY ***
+Total pot $0.47 | Rake $0.02 
+Board [Qs Kh 6c 3h 4d]
+Seat 1: 0warren0 folded on the Flop
+Seat 2: HEISE 65 folded before Flop (didn't bet)
+Seat 3: eglyakov (button) folded before Flop (didn't bet)
+Seat 4: TeuFe1e4ek89 (small blind) folded before Flop
+Seat 5: VMati (big blind) showed [Jd Kd] and won ($0.45) with a pair of Kings (pot not awarded as player cashed out)
+Seat 6: in-yanspb folded before Flop (didn't bet)
+Seat 8: perec2 folded before Flop (didn't bet)
+Seat 9: bobsondugnutt11 showed [Ts Tc] and lost with a pair of Tens
