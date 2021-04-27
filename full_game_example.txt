@@ -1,5 +1,5 @@
 ﻿
-PokerStars Hand #223687903169:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/11 18:07:28 WET [2021/02/11 13:07:28 ET]
+PokerStarsCollection Hand #223687903169:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/11 18:07:28 WET [2021/02/11 13:07:28 ET]
 Table 'Jabbah' 9-max Seat #6 is the button
 Seat 1: ElGinoo1 ($2.94 in chips) 
 Seat 2: BlikDik ($0.73 in chips) 

@@ -1,4 +1,4 @@
-﻿PokerStars Hand #223691940887:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/11 19:43:22 WET [2021/02/11 14:43:22 ET]
+﻿PokerStarsCollection Hand #223691940887:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/11 19:43:22 WET [2021/02/11 14:43:22 ET]
 Table 'Naef IV' 9-max Seat #3 is the button
 Seat 1: 0warren0 ($0.80 in chips) 
 Seat 2: HEISE 65 ($1.33 in chips) 
