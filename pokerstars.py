@@ -3,8 +3,7 @@ import random
 import re
 import pandas as pd
 from collections import Counter
-
-from src.poker_main import Player
+from src.poker_main import Player, BoardAnalysis
 
 
 class PokerStarsGame(object):
@@ -86,7 +85,7 @@ class PokerStarsGame(object):
     def get_final_pot(self):
         for line in self.game_text:
             if "collected" in line:
-                return float(line.split("$")[1].split()[0].strip("()"))
+                return float(line.split("$")[-1].split()[0].strip("()"))
 
     def simulate_game(self, players=None, n=100, use_table_cards=True, table_card_length=None):
         """
@@ -108,7 +107,7 @@ class PokerStarsGame(object):
         table_cards_dict = {}
 
         # used cards are cards that can no longer come out of the deck
-        used_cards = list(itertools.chain(*players.hand_values()))
+        used_cards = list(itertools.chain(*players.values()))
 
         # simulates the game n times
         for i in range(n):
@@ -116,9 +115,7 @@ class PokerStarsGame(object):
             ranking_dict = {}
 
             # get ranking of each hand with the set of table cards
-            for name, player_cards in players.items():
-                opponent_ranking = Player(player_cards, self.table_cards).analyse_cards()
-                ranking_dict[name] = (opponent_ranking[0], opponent_ranking[1])
+            rankings = BoardAnalysis(players.values, self.table_cards).analyse_cards()
 
             # get a list of winners in hand
             winning_list = [k for k, v in ranking_dict.items() if v == max(ranking_dict.values())]
@@ -170,7 +167,7 @@ class PokerStarsGame(object):
 
 
 class PokerStarsCollection(object):
-    def __init__(self, file, working_dir, hero="Bobson_Dugnutt", write_files=False):
+    def __init__(self, file, working_dir, encoding="ISO-8859-14", hero="Bobson_Dugnutt", write_files=False):
 
         self.suits = {"c": "clubs",
                       "s": "spades",
@@ -195,10 +192,12 @@ class PokerStarsCollection(object):
         self.working_dir = working_dir
         self.hero = hero
 
+        self.encoding = encoding
         self.games_text = self.process_file(split_files=write_files)
         self.games_data = {}
         i = 0
         for key, game in self.games_text.items():
+            print(key)
             self.games_data[key] = self.read_pokerstars_file(lines=game, game_index=i)
             i += 1
 
@@ -211,7 +210,8 @@ class PokerStarsCollection(object):
         files_dict = {}
         file_number = 0
 
-        with open(self.file, "r") as rf:
+        # open file with pokerstars data in it
+        with open(self.file, "r", encoding=self.encoding) as rf:
 
             line_marker = 0
 
@@ -220,7 +220,7 @@ class PokerStarsCollection(object):
             write = False
 
             for line in rf.readlines():
-                if "PokerStarsCollection Hand" in line:
+                if "PokerStarsCollection Hand" in line or "PokerStars Zoom Hand" in line:
                     start = True
                     write = True
                     files_dict[file_number] = []
@@ -439,6 +439,8 @@ class PokerStarsCollection(object):
         # process file
         game_text = self.split_game_to_events(file=None, lines=lines)
 
+        print(game_text)
+
         # get table cards
         table_cards = self.get_final_table_cards(game_text["SUMMARY"], lines)
 
@@ -459,8 +461,8 @@ class PokerStarsCollection(object):
 
         data_dict["summary"], winners, winning_hands = self.read_summary(game_text["SUMMARY"])
         events_df = pd.concat([val for val in data_dict.values()], axis=1)
-        game = PokerGame([item for sublist in game_text.values() for item in sublist], events_df, table_cards,
-                         winners=winners, winning_hands=winning_hands, game_index=game_index)
+        game = PokerStarsGame([item for sublist in game_text.values() for item in sublist], events_df, table_cards,
+                              winners=winners, winning_hands=winning_hands, game_index=game_index)
         return game
 
     def winning_games(self, winner=None):
