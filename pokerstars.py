@@ -1,14 +1,15 @@
+import copy
 import itertools
 import random
 import re
 import pandas as pd
 from collections import Counter
-from src.poker_main import Player, BoardAnalysis
+from src.poker_main import *
 
 
 class PokerStarsGame(object):
 
-    def __init__(self, game_text, data, table_cards, winners, winning_hands, hero="Bobson_Dugnutt", game_index=0):
+    def __init__(self, game_text, data, table_cards, winners, winning_hands, hero="bobsondugnutt11", game_index=0):
         """
 
         Args:
@@ -44,7 +45,7 @@ class PokerStarsGame(object):
                        "K": 13,
                        "A": 14}
 
-        self.deck = set((value, suit) for suit in self.suits for value in self.values.values())
+        self.deck = [Card(value + suit) for suit in self.suits for value in self.values]
         self.data = data
         self.game_index = game_index
         self.game_text = game_text
@@ -62,8 +63,6 @@ class PokerStarsGame(object):
         self.hero = hero
 
         self.player_cards_text = self.get_player_cards()
-        if self.player_cards_text is not None:
-            self.player_cards = self.translate_hand(self.player_cards_text.split())
 
         self.player_names = None
         self.player_final_action = None
@@ -74,20 +73,22 @@ class PokerStarsGame(object):
         return self.data.index[self.data[f"{size.capitalize()} Blind"] == True].to_list()
 
     def translate_hand(self, hand):
-        # translates hands from pokerstars output format to list of tuples
+        # translates hand from pokerstars output format to list of tuples
         return [(int(self.values[card[0]]), self.suits[card[1]]) for card in hand]
 
     def get_player_cards(self):
         for line in self.game_text:
             if "Dealt" in line and self.hero in line:
-                return line.split("[")[-1].rstrip("]\n")
+                cards = line.split("[")[-1].rstrip("]\n").split()
+                print(cards)
+                return [Card(x) for x in cards]
 
     def get_final_pot(self):
         for line in self.game_text:
             if "collected" in line:
                 return float(line.split("$")[-1].split()[0].strip("()"))
 
-    def simulate_game(self, players=None, n=100, use_table_cards=True, table_card_length=None):
+    def simulate_game(self, players=None, n=100, use_table_cards=True, table_card_length=5):
         """
         A function that runs a simulation for n poker_session to see how likely a hero is to win pre flop against
         other hands
@@ -100,33 +101,41 @@ class PokerStarsGame(object):
         Returns:
 
         """
-
         # set up
-        winners_dict = {k: 0 for k in players.keys()}
-        ties_dict = {k: 0 for k in players.keys()}
+        winners_dict = {k: 0 for k in [x.name for x in players]}
+        ties_dict = {k: 0 for k in [x.name for x in players]}
         table_cards_dict = {}
 
         # used cards are cards that can no longer come out of the deck
-        used_cards = list(itertools.chain(*players.values()))
+        used_cards = list(itertools.chain([y for x in players for y in x.cards]))
+
+        for player in players:
+            player.hand_ranking = []
 
         # simulates the game n times
         for i in range(n):
-
+            current_players = copy.deepcopy(players)
             ranking_dict = {}
-
             # get ranking of each hand with the set of table cards
-            rankings = BoardAnalysis(players.values, self.table_cards).analyse_cards()
+            if use_table_cards:
+                rankings = BoardAnalysis(current_players, self.table_cards)
+            else:
+                cards = copy.deepcopy(self.deck)
+                for card in used_cards:
+                    cards.remove(card)
+                table_cards = random.sample(cards, table_card_length)
+                rankings = BoardAnalysis(current_players, table_cards)
 
             # get a list of winners in hand
-            winning_list = [k for k, v in ranking_dict.items() if v == max(ranking_dict.values())]
+            winning_list = rankings.winners
             table_cards_dict[i] = self.table_cards
 
             # determine if single winner of if there was a draw
             for winner in winning_list:
                 if len(winning_list) > 1:
-                    ties_dict[winner] += 1
+                    ties_dict[winner.name] += 1
                 else:
-                    winners_dict[winner] += 1
+                    winners_dict[winner.name] += 1
 
         for key, value in winners_dict.items():
             winners_dict[key] = 100 * value / n
@@ -156,7 +165,7 @@ class PokerStarsGame(object):
             print_table_cards = self.table_cards
 
         line = "-" * max([len(y) for y in ["Winners: " + print_winners,
-                                           "Winning Cards: " + print_table_cards,
+                                           "Winning Cards: " + f"{print_table_cards}",
                                            "Table Cards: " + print_winning_hands]])
         return f'Poker Game #{self.game_index}\n' + \
                line + "\n" + \
@@ -167,7 +176,12 @@ class PokerStarsGame(object):
 
 
 class PokerStarsCollection(object):
-    def __init__(self, file, working_dir, encoding="ISO-8859-14", hero="Bobson_Dugnutt", write_files=False):
+    def __init__(self,
+                 file,
+                 working_dir,
+                 encoding="ISO-8859-14",
+                 hero="Bobson_Dugnutt",
+                 write_files=False):
 
         self.suits = {"c": "clubs",
                       "s": "spades",
@@ -195,9 +209,9 @@ class PokerStarsCollection(object):
         self.encoding = encoding
         self.games_text = self.process_file(split_files=write_files)
         self.games_data = {}
+
         i = 0
         for key, game in self.games_text.items():
-            print(key)
             self.games_data[key] = self.read_pokerstars_file(lines=game, game_index=i)
             i += 1
 
@@ -252,7 +266,7 @@ class PokerStarsCollection(object):
         return hand_regex.findall(hand)[0].strip("[]").split()
 
     def translate_hand(self, hand):
-        # translates hands from pokerstars output format to list of tuples
+        # translates hand from pokerstars output format to list of tuples
         return [(self.values[card[0]], self.suits[card[1]]) for card in hand]
 
     def read_hand_file(self, file):
@@ -419,7 +433,8 @@ class PokerStarsCollection(object):
     def get_final_table_cards(self, lines):
         for line in reversed(lines):
             if "Board" in line:
-                return re.findall("\[.+]", line)[0].strip("[]")
+                list_of_cards = re.findall("\[.+]", line)[0].strip("[]").split()
+                return [Card(x) for x in list_of_cards]
         return None
 
     def read_pokerstars_file(self, lines, game_index=0):
@@ -434,12 +449,11 @@ class PokerStarsCollection(object):
             events df (pandas df)
         """
 
+        # dictionary will later be converted to a pandas df
         data_dict = {}
 
         # process file
         game_text = self.split_game_to_events(file=None, lines=lines)
-
-        print(game_text)
 
         # get table cards
         table_cards = self.get_final_table_cards(game_text["SUMMARY"], lines)
