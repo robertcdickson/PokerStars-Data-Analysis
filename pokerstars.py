@@ -80,7 +80,6 @@ class PokerStarsGame(object):
         for line in self.game_text:
             if "Dealt" in line and self.hero in line:
                 cards = line.split("[")[-1].rstrip("]\n").split()
-                print(cards)
                 return [Card(x) for x in cards]
 
     def get_final_pot(self):
@@ -380,24 +379,72 @@ class PokerStarsCollection(object):
 
     def read_betting_action(self, lines_list, play_phase=None):
         data = {}
+
+        # pre-flop there has been a bet due to big blind
+        if play_phase == "pre-flop":
+            number_of_raises = 1
+        else:
+            number_of_raises = 0
+
         for line in lines_list:
 
+            # Dealt should only be shown for hero!
             if "Dealt" in line:
-                player_name = line.split()[2]
-                # data["Player Name"].append(player_name)
+                player_name = line.split()[2].replace(" ", "")
                 cards = [line.split()[3].lstrip("["), line.split()[4].rstrip("]")]
 
-            elif ":" in line:
-                player_name = line.split(":")[0]
-                action = line.split(":")[1].rstrip()
+            elif ":" in line:  # I think having this filters out players joining table, disconnecting etc. for speed up
+                player_name = line.split(":")[0].replace(" ", "")
+
                 if player_name not in data.keys():
-                    data[player_name] = [action]
-                else:
-                    data[player_name].append(action)
+                    print(player_name)
+                    data[player_name] = {}
+
+                action = line.split(":")[1].rstrip()
+
+                if "bets" in action:
+
+                    bet_data = action.split()
+
+                    number_of_raises = 1
+
+                    # player has raised (note this may be true for big blind)
+                    data[player_name][play_phase + " raise"] = True
+                    data[player_name][play_phase + " raise size"] = bet_data[1].strip("$")
+
+                elif "raises" in action:
+                    number_of_raises += 1
+                    raise_data = action.split()
+                    if number_of_raises < 3:
+                        if play_phase == "pre-flop":
+                            # player has raised (note this may be true for big blind)
+                            data[player_name][play_phase + " raise"] = True
+                            data[player_name][play_phase + " raise size"] = raise_data[1].strip("$")
+                            data[player_name][play_phase + " raise to"] = raise_data[3].strip("$")
+                        else:
+                            # player has raised (note this may be true for big blind)
+                            data[player_name][play_phase + " re-raise"] = True
+                            data[player_name][play_phase + " re-raise size"] = raise_data[1].strip("$")
+                            data[player_name][play_phase + " re-raise to"] = raise_data[3].strip("$")
+                    else:
+                        # player has raised (note this may be true for big blind)
+                        data[player_name][play_phase + f" {number_of_raises}-bet"] = True
+                        data[player_name][play_phase + f" {number_of_raises}-bet size"] = raise_data[1].strip("$")
+                        data[player_name][play_phase + f" {number_of_raises}-bet to"] = raise_data[3].strip("$")
 
         normalised_dict = dict([(k, pd.Series(v)) for k, v in data.items()])
         df = pd.DataFrame(normalised_dict).transpose()
-        df.columns = [f"{play_phase.capitalize()} Action {i}" for i in range(1, len(df.columns) + 1)]
+
+        # set all fill na needed
+        nan_inplace_value_columns = ["raise", "re-raise", "3-bet", "4-bet", "5-bet"]
+        nan_inplace_value_columns = [f"{play_phase} " + x for x in nan_inplace_value_columns]
+
+        for x in nan_inplace_value_columns:
+            if x in df.columns:
+                df[x].fillna(False, inplace=True)
+        # df["pre-flop 5-bet"].fillna(False, inplace=True)
+        # df.columns = [f"{play_phase.capitalize()} Action {i}" for i in range(1, len(df.columns) + 1)]
+
         return df
 
     def operations(self, operator, line):
@@ -461,8 +508,8 @@ class PokerStarsCollection(object):
         # pre-deal data
         data_dict["pre_action"] = self.read_pre_deal_lines(game_text["HEADER"])
 
-        search_dict = {"deal": "HOLE CARDS",
-                       "flop": "FLOP",
+        search_dict = {"pre-flop": "HOLE CARDS",
+                       "post-flop": "FLOP",
                        "turn": "TURN",
                        "river": "RIVER",
                        "showdown": "SHOW DOWN"}
