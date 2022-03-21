@@ -383,8 +383,12 @@ class PokerStarsCollection(object):
         # pre-flop there has been a bet due to big blind
         if play_phase == "pre-flop":
             number_of_raises = 1
+            number_of_calls = 1  # this may be problematic later
         else:
             number_of_raises = 0
+            number_of_calls = 0
+
+        cards = None
 
         for line in lines_list:
 
@@ -399,6 +403,9 @@ class PokerStarsCollection(object):
                 if player_name not in data.keys():
                     print(player_name)
                     data[player_name] = {}
+                    if cards:
+                        data[player_name]["cards"] = cards
+                        cards = None
 
                 action = line.split(":")[1].rstrip()
 
@@ -407,10 +414,34 @@ class PokerStarsCollection(object):
                     bet_data = action.split()
 
                     number_of_raises = 1
+                    number_of_calls = 0
 
                     # player has raised (note this may be true for big blind)
                     data[player_name][play_phase + " raise"] = True
                     data[player_name][play_phase + " raise size"] = bet_data[1].strip("$")
+
+                elif "calls" in action:
+                    call_data = action.split()
+                    number_of_calls += 1
+
+                    # if player open limps
+                    if number_of_raises == 1 and play_phase == "pre-flop":
+                        data[player_name][play_phase + " limp"] = True
+
+                    # else calling a bet
+                    else:
+                        if number_of_raises < 3:
+                            data[player_name]["called " + play_phase + " raise"] = True
+                            data[player_name]["called " + play_phase + " raise size"] = call_data[1].strip("$")
+                        else:
+                            data[player_name]["called " + play_phase + f" {number_of_raises}-bet"] = True
+                            data[player_name]["called " + play_phase + f" {number_of_raises}-bet size"] = call_data[1].strip("$")
+
+                elif "folds" in action:
+                    if number_of_raises == 1 and play_phase == "preflop":
+                        data[player_name]["fold to " + play_phase + " limp"] = True
+                    else:
+                        data[player_name]["fold to " + play_phase + " raise"] = True
 
                 elif "raises" in action:
                     number_of_raises += 1
@@ -509,7 +540,7 @@ class PokerStarsCollection(object):
         data_dict["pre_action"] = self.read_pre_deal_lines(game_text["HEADER"])
 
         search_dict = {"pre-flop": "HOLE CARDS",
-                       "post-flop": "FLOP",
+                       "flop": "FLOP",
                        "turn": "TURN",
                        "river": "RIVER",
                        "showdown": "SHOW DOWN"}
