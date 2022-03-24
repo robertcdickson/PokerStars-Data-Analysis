@@ -182,6 +182,7 @@ class PokerStarsCollection(object):
                  hero="Bobson_Dugnutt",
                  write_files=False):
 
+        self.hero_cards = None
         self.suits = {"c": "clubs",
                       "s": "spades",
                       "d": "diamonds",
@@ -397,15 +398,20 @@ class PokerStarsCollection(object):
                 player_name = line.split()[2].replace(" ", "")
                 cards = [line.split()[3].lstrip("["), line.split()[4].rstrip("]")]
 
+                if player_name not in data.keys():
+                    data[player_name] = {}
+                    if cards:
+                        hero_cards_str = ""
+                        for x in cards:
+                            hero_cards_str += str(x) + " "
+                        self.hero_cards = hero_cards_str.rstrip()
+                        cards = None
+
             elif ":" in line:  # I think having this filters out players joining table, disconnecting etc. for speed up
                 player_name = line.split(":")[0].replace(" ", "")
 
                 if player_name not in data.keys():
-                    print(player_name)
                     data[player_name] = {}
-                    if cards:
-                        data[player_name]["cards"] = cards
-                        cards = None
 
                 action = line.split(":")[1].rstrip()
 
@@ -435,7 +441,10 @@ class PokerStarsCollection(object):
                             data[player_name]["called " + play_phase + " raise size"] = call_data[1].strip("$")
                         else:
                             data[player_name]["called " + play_phase + f" {number_of_raises}-bet"] = True
-                            data[player_name]["called " + play_phase + f" {number_of_raises}-bet size"] = call_data[1].strip("$")
+                            data[player_name]["called " + play_phase + f" {number_of_raises}-bet size"] = call_data[
+                                1].strip("$")
+                elif "checks" in action:
+                    data[player_name]["check " + play_phase] = True
 
                 elif "folds" in action:
                     if number_of_raises == 1 and play_phase == "preflop":
@@ -469,6 +478,8 @@ class PokerStarsCollection(object):
         # set all fill na needed
         nan_inplace_value_columns = ["raise", "re-raise", "3-bet", "4-bet", "5-bet"]
         nan_inplace_value_columns = [f"{play_phase} " + x for x in nan_inplace_value_columns]
+        nan_inplace_value_columns += [f"called {play_phase} raise"]
+        nan_inplace_value_columns += [f"check {play_phase}"]
 
         for x in nan_inplace_value_columns:
             if x in df.columns:
@@ -505,6 +516,9 @@ class PokerStarsCollection(object):
                 b = re.sub("Seat [0-9]: ", "", a).strip()
                 winners.append(b)
 
+        if self.hero not in data.keys():
+            data[self.hero] = str(self.hero_cards)
+        print(data)
         return pd.DataFrame(data.values(), index=data.keys(), columns=["Player Cards"]), winners, winning_hands
 
     @staticmethod
