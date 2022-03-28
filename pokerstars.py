@@ -399,7 +399,7 @@ class PokerStarsCollection(object):
             key = "HEADER"
             data_dicts[key] = []
             for line in lines:
-                if "***" in line:
+                if "*** " in line and "said" not in line:
                     if any(x in line for x in ["RIVER"]):
                         table_cards = (
                             re.search(r"\[.*\]", line)
@@ -475,6 +475,7 @@ class PokerStarsCollection(object):
         return data_df
 
     def read_betting_action(self, lines_list, play_phase=None):
+        # TODO: This only currently works for zoom hands
         data = {}
 
         # pre-flop there has been a bet due to big blind
@@ -491,8 +492,9 @@ class PokerStarsCollection(object):
 
             # Dealt should only be shown for hero!
             if "Dealt" in line:
-                player_name = line.split()[2].replace(" ", "")
-                cards = [line.split()[3].lstrip("["), line.split()[4].rstrip("]")]
+                x = line.split()
+                player_name = x[2].replace(" ", "")
+                cards = [x[3].lstrip("["), x[4].rstrip("]")]
 
                 if player_name not in data.keys():
                     data[player_name] = {}
@@ -649,7 +651,7 @@ class PokerStarsCollection(object):
     @staticmethod
     def get_final_table_cards(self, lines):
         for line in reversed(lines):
-            if "Board" in line:
+            if "Board [" in line:
                 list_of_cards = re.findall("\[.+]", line)[0].strip("[]").split()
                 return [Card(x) for x in list_of_cards]
         return None
