@@ -323,15 +323,26 @@ class PokerStarsGame(object):
 
         ]
 
-        self.game_type = self.game_text[0].split("#")[0].rstrip(" ").split(" ")[1]
-        self.game_code = self.game_text[0].split("#")[1].split(":")[0]
-        self.stakes = self.game_text[0].split("(")[1].split(")")[0]
-        self.big_blind_size = float(self.stakes.split("/")[1].strip("$"))
-        self.data["Chips (BB)"] = self.data["Chips"] / self.big_blind_size
-        self.date = self.game_text[0].split("-")[1].split("[")[0].split(" ")[1]
-        self.time = self.game_text[0].split("-")[1].split("[")[0].split(" ")[2]
-        self.max_players = self.game_text[1].split(" ")[2]
-        self.table_name = self.game_text[1].split(" ")[1]
+        if "Zoom" in self.game_text[0]:
+            self.game_type = "Zoom"
+            self.game_code = self.game_text[0].split("#")[1].split(":")[0]
+            self.stakes = self.game_text[0].split("(")[1].split(")")[0]
+            self.big_blind_size = float(self.stakes.split("/")[1].strip("$"))
+            self.data["Chips (BB)"] = self.data["Chips"] / self.big_blind_size
+            self.date = self.game_text[0].split("-")[1].split("[")[0].split(" ")[1]
+            self.time = self.game_text[0].split("-")[1].split("[")[0].split(" ")[2]
+            self.max_players = self.game_text[1].split("\'")[2].split(" ")[1]
+            self.table_name = self.game_text[1].split("\'")[1]
+        else:
+            self.game_type = "Normal"
+            self.game_code = self.game_text[0].split("#")[1].split(":")[0]
+            self.stakes = self.game_text[0].split("(")[1].split(")")[0]
+            self.big_blind_size = float(self.stakes.split("/")[1].strip("$").split()[0])
+            self.data["Chips (BB)"] = self.data["Chips"] / self.big_blind_size
+            self.date = self.game_text[0].split("-")[1].split("[")[0].split(" ")[1]
+            self.time = self.game_text[0].split("-")[1].split("[")[0].split(" ")[2]
+            self.max_players = self.game_text[1].split("\'")[2].split(" ")[1]
+            self.table_name = self.game_text[1].split("\'")[1]
 
         self.values_for_full_data = {
             "Game Type": self.game_type,
@@ -339,7 +350,8 @@ class PokerStarsGame(object):
             "Stakes": self.stakes,
             "Date": self.date,
             "Time": self.time,
-            "Max Players": self.max_players
+            "Max Players": self.max_players,
+            "Table Name": self.table_name
         }
 
         self.data = self.get_full_data()
