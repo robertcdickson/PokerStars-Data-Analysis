@@ -1,0 +1,663 @@
+﻿PokerStarsCollection Hand #223646450352:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:46:32 WET [2021/02/10 10:46:32 ET]
+Table 'Ornamenta V' 9-max Seat #2 is the button
+Seat 1: Sleve_McDichael ($2.03 in chips) 
+Seat 2: Darryl_Archideld ($1.97 in chips) 
+Seat 3: Willie_Dustice ($5.19 in chips) 
+Seat 4: Bobson_Dugnutt ($2 in chips) 
+Seat 5: Scott_Dourque ($0.25 in chips) 
+Seat 6: Mike_Truk ($1.75 in chips) 
+Seat 7: Tim_Sandaele ($1.96 in chips) 
+Seat 8: Karl_Dandleton ($2.08 in chips) 
+Seat 9: Todd_Bonzalez ($1.60 in chips) 
+Willie_Dustice: posts small blind $0.01
+Bobson_Dugnutt: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [9c Jc]
+Scott_Dourque: folds 
+Mike_Truk: folds 
+Tim_Sandaele: folds 
+Karl_Dandleton: folds 
+Todd_Bonzalez: calls $0.02
+Sleve_McDichael: calls $0.02
+Darryl_Archideld: folds 
+Willie_Dustice: folds 
+Bobson_Dugnutt: checks 
+*** FLOP *** [9s 6h 7h]
+Bobson_Dugnutt: bets $0.02
+Todd_Bonzalez: calls $0.02
+Sleve_McDichael: raises $0.07 to $0.09
+Bobson_Dugnutt: folds 
+Todd_Bonzalez: folds 
+Uncalled bet ($0.07) returned to Sleve_McDichael
+Sleve_McDichael collected $0.13 from pot
+Sleve_McDichael: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.13 | Rake $0 
+Board [9s 6h 7h]
+Seat 1: Sleve_McDichael collected ($0.13)
+Seat 2: Darryl_Archideld (button) folded before Flop (didn't bet)
+Seat 3: Willie_Dustice (small blind) folded before Flop
+Seat 4: Bobson_Dugnutt (big blind) folded on the Flop
+Seat 5: Scott_Dourque folded before Flop (didn't bet)
+Seat 6: Mike_Truk folded before Flop (didn't bet)
+Seat 7: Tim_Sandaele folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton folded before Flop (didn't bet)
+Seat 9: Todd_Bonzalez folded on the Flop
+
+
+
+PokerStarsCollection Hand #223646478116:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:47:29 WET [2021/02/10 10:47:29 ET]
+Table 'Ornamenta V' 9-max Seat #3 is the button
+Seat 1: Sleve_McDichael ($2.12 in chips) 
+Seat 2: Darryl_Archideld ($1.97 in chips) 
+Seat 3: Willie_Dustice ($5.18 in chips) 
+Seat 4: Bobson_Dugnutt ($1.96 in chips) 
+Seat 5: Scott_Dourque ($0.25 in chips) 
+Seat 6: Mike_Truk ($1.75 in chips) 
+Seat 7: Tim_Sandaele ($1.96 in chips) 
+Seat 8: Karl_Dandleton ($2.08 in chips) 
+Seat 9: Todd_Bonzalez ($1.56 in chips) 
+Bobson_Dugnutt: posts small blind $0.01
+Scott_Dourque: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [3s 5c]
+Mike_Truk: folds 
+Tim_Sandaele: folds 
+Karl_Dandleton: folds 
+Todd_Bonzalez: folds 
+Sleve_McDichael: calls $0.02
+Darryl_Archideld: folds 
+Willie_Dustice: raises $0.06 to $0.08
+Bobson_Dugnutt: folds 
+Scott_Dourque: folds 
+Sleve_McDichael: folds 
+Uncalled bet ($0.06) returned to Willie_Dustice
+Willie_Dustice collected $0.07 from pot
+Willie_Dustice: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.07 | Rake $0 
+Seat 1: Sleve_McDichael folded before Flop
+Seat 2: Darryl_Archideld folded before Flop (didn't bet)
+Seat 3: Willie_Dustice (button) collected ($0.07)
+Seat 4: Bobson_Dugnutt (small blind) folded before Flop
+Seat 5: Scott_Dourque (big blind) folded before Flop
+Seat 6: Mike_Truk folded before Flop (didn't bet)
+Seat 7: Tim_Sandaele folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton folded before Flop (didn't bet)
+Seat 9: Todd_Bonzalez folded before Flop (didn't bet)
+
+
+
+PokerStarsCollection Hand #223646496026:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:48:06 WET [2021/02/10 10:48:06 ET]
+Table 'Ornamenta V' 9-max Seat #4 is the button
+Seat 1: Sleve_McDichael ($2.10 in chips) 
+Seat 2: Darryl_Archideld ($2 in chips) 
+Seat 3: Willie_Dustice ($5.23 in chips) 
+Seat 4: Bobson_Dugnutt ($1.95 in chips) 
+Seat 5: Scott_Dourque ($0.23 in chips) 
+Seat 6: Mike_Truk ($1.75 in chips) 
+Seat 7: Tim_Sandaele ($1.96 in chips) 
+Seat 8: Karl_Dandleton ($2.08 in chips) 
+Seat 9: Todd_Bonzalez ($1.56 in chips) 
+Scott_Dourque: posts small blind $0.01
+Mike_Truk: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [Ac Jh]
+Tim_Sandaele: folds 
+Karl_Dandleton: folds 
+Todd_Bonzalez: calls $0.02
+Sleve_McDichael: folds 
+Darryl_Archideld: folds 
+Willie_Dustice: folds 
+Bobson_Dugnutt: raises $0.07 to $0.09
+Scott_Dourque: folds 
+Mike_Truk: folds 
+Todd_Bonzalez: folds 
+Uncalled bet ($0.07) returned to Bobson_Dugnutt
+Bobson_Dugnutt collected $0.07 from pot
+Bobson_Dugnutt: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.07 | Rake $0 
+Seat 1: Sleve_McDichael folded before Flop (didn't bet)
+Seat 2: Darryl_Archideld folded before Flop (didn't bet)
+Seat 3: Willie_Dustice folded before Flop (didn't bet)
+Seat 4: Bobson_Dugnutt (button) collected ($0.07)
+Seat 5: Scott_Dourque (small blind) folded before Flop
+Seat 6: Mike_Truk (big blind) folded before Flop
+Seat 7: Tim_Sandaele folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton folded before Flop (didn't bet)
+Seat 9: Todd_Bonzalez folded before Flop
+
+
+
+PokerStarsCollection Hand #223646511216:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:48:37 WET [2021/02/10 10:48:37 ET]
+Table 'Ornamenta V' 9-max Seat #5 is the button
+Seat 1: Sleve_McDichael ($2.10 in chips) 
+Seat 2: Darryl_Archideld ($2 in chips) 
+Seat 3: Willie_Dustice ($5.23 in chips) 
+Seat 4: Bobson_Dugnutt ($2 in chips) 
+Seat 5: Scott_Dourque ($0.22 in chips) 
+Seat 6: Mike_Truk ($1.73 in chips) 
+Seat 7: Tim_Sandaele ($1.96 in chips) 
+Seat 8: Karl_Dandleton ($2.08 in chips) 
+Seat 9: Todd_Bonzalez ($1.54 in chips) 
+Mike_Truk: posts small blind $0.01
+Tim_Sandaele: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [5s 8c]
+Karl_Dandleton: raises $0.03 to $0.05
+Todd_Bonzalez: calls $0.05
+Sleve_McDichael: folds 
+Darryl_Archideld: folds 
+Willie_Dustice: folds 
+Bobson_Dugnutt: folds 
+Scott_Dourque: folds 
+Mike_Truk: folds 
+Tim_Sandaele: folds 
+*** FLOP *** [Ks 6c 7h]
+Karl_Dandleton: checks 
+Todd_Bonzalez: checks 
+*** TURN *** [Ks 6c 7h] [6d]
+Karl_Dandleton: bets $0.07
+Todd_Bonzalez: folds 
+Uncalled bet ($0.07) returned to Karl_Dandleton
+Karl_Dandleton collected $0.13 from pot
+Karl_Dandleton: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.13 | Rake $0 
+Board [Ks 6c 7h 6d]
+Seat 1: Sleve_McDichael folded before Flop (didn't bet)
+Seat 2: Darryl_Archideld folded before Flop (didn't bet)
+Seat 3: Willie_Dustice folded before Flop (didn't bet)
+Seat 4: Bobson_Dugnutt folded before Flop (didn't bet)
+Seat 5: Scott_Dourque (button) folded before Flop (didn't bet)
+Seat 6: Mike_Truk (small blind) folded before Flop
+Seat 7: Tim_Sandaele (big blind) folded before Flop
+Seat 8: Karl_Dandleton collected ($0.13)
+Seat 9: Todd_Bonzalez folded on the Turn
+
+
+
+PokerStarsCollection Hand #223646537550:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:49:31 WET [2021/02/10 10:49:31 ET]
+Table 'Ornamenta V' 9-max Seat #6 is the button
+Seat 1: Sleve_McDichael ($2.10 in chips) 
+Seat 2: Darryl_Archideld ($2 in chips) 
+Seat 3: Willie_Dustice ($5.23 in chips) 
+Seat 4: Bobson_Dugnutt ($2 in chips) 
+Seat 5: Scott_Dourque ($0.22 in chips) 
+Seat 6: Mike_Truk ($1.72 in chips) 
+Seat 7: Tim_Sandaele ($1.94 in chips) 
+Seat 8: Karl_Dandleton ($2.16 in chips) 
+Seat 9: Todd_Bonzalez ($1.49 in chips) 
+Tim_Sandaele: posts small blind $0.01
+Karl_Dandleton: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [Ac Jd]
+Todd_Bonzalez has timed out
+Todd_Bonzalez: folds 
+Sleve_McDichael: folds 
+Darryl_Archideld: folds 
+Willie_Dustice: folds 
+Bobson_Dugnutt: raises $0.04 to $0.06
+Scott_Dourque: folds 
+Mike_Truk: calls $0.06
+Tim_Sandaele: folds 
+Karl_Dandleton: folds 
+*** FLOP *** [Qh 7c Ks]
+Bobson_Dugnutt: bets $0.06
+Mike_Truk: calls $0.06
+*** TURN *** [Qh 7c Ks] [4h]
+Bobson_Dugnutt: bets $0.14
+Mike_Truk: folds 
+Uncalled bet ($0.14) returned to Bobson_Dugnutt
+Bobson_Dugnutt collected $0.26 from pot
+Bobson_Dugnutt: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.27 | Rake $0.01 
+Board [Qh 7c Ks 4h]
+Seat 1: Sleve_McDichael folded before Flop (didn't bet)
+Seat 2: Darryl_Archideld folded before Flop (didn't bet)
+Seat 3: Willie_Dustice folded before Flop (didn't bet)
+Seat 4: Bobson_Dugnutt collected ($0.26)
+Seat 5: Scott_Dourque folded before Flop (didn't bet)
+Seat 6: Mike_Truk (button) folded on the Turn
+Seat 7: Tim_Sandaele (small blind) folded before Flop
+Seat 8: Karl_Dandleton (big blind) folded before Flop
+Seat 9: Todd_Bonzalez folded before Flop (didn't bet)
+
+
+
+PokerStarsCollection Hand #223646572650:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:50:43 WET [2021/02/10 10:50:43 ET]
+Table 'Ornamenta V' 9-max Seat #7 is the button
+Seat 1: Sleve_McDichael ($2.10 in chips) 
+Seat 2: Darryl_Archideld ($2 in chips) 
+Seat 3: Willie_Dustice ($5.23 in chips) 
+Seat 4: Bobson_Dugnutt ($2.14 in chips) 
+Seat 5: Scott_Dourque ($0.22 in chips) 
+Seat 6: Mike_Truk ($1.60 in chips) 
+Seat 7: Tim_Sandaele ($1.93 in chips) 
+Seat 8: Karl_Dandleton ($2.14 in chips) 
+Seat 9: Todd_Bonzalez ($1.49 in chips) 
+Karl_Dandleton: posts small blind $0.01
+Todd_Bonzalez: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [Qs Ad]
+Sleve_McDichael: folds 
+Darryl_Archideld: folds 
+Willie_Dustice: raises $0.06 to $0.08
+Bobson_Dugnutt: raises $0.12 to $0.20
+Scott_Dourque: folds 
+Mike_Truk: folds 
+Tim_Sandaele: folds 
+Karl_Dandleton: folds 
+Todd_Bonzalez: folds 
+Willie_Dustice: calls $0.12
+*** FLOP *** [7h Js 3h]
+Willie_Dustice: checks 
+Bobson_Dugnutt: bets $0.20
+Willie_Dustice: folds 
+Uncalled bet ($0.20) returned to Bobson_Dugnutt
+Bobson_Dugnutt collected $0.41 from pot
+Bobson_Dugnutt: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.43 | Rake $0.02 
+Board [7h Js 3h]
+Seat 1: Sleve_McDichael folded before Flop (didn't bet)
+Seat 2: Darryl_Archideld folded before Flop (didn't bet)
+Seat 3: Willie_Dustice folded on the Flop
+Seat 4: Bobson_Dugnutt collected ($0.41)
+Seat 5: Scott_Dourque folded before Flop (didn't bet)
+Seat 6: Mike_Truk folded before Flop (didn't bet)
+Seat 7: Tim_Sandaele (button) folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton (small blind) folded before Flop
+Seat 9: Todd_Bonzalez (big blind) folded before Flop
+
+
+
+PokerStarsCollection Hand #223646597506:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:51:33 WET [2021/02/10 10:51:33 ET]
+Table 'Ornamenta V' 9-max Seat #8 is the button
+Seat 1: Sleve_McDichael ($2.10 in chips) 
+Seat 2: Darryl_Archideld ($2 in chips) 
+Seat 3: Willie_Dustice ($5.03 in chips) 
+Seat 4: Bobson_Dugnutt ($2.35 in chips) 
+Seat 5: Scott_Dourque ($0.22 in chips) 
+Seat 6: Mike_Truk ($1.60 in chips) 
+Seat 7: Tim_Sandaele ($1.93 in chips) 
+Seat 8: Karl_Dandleton ($2.13 in chips) 
+Seat 9: Todd_Bonzalez ($1.47 in chips) 
+Todd_Bonzalez: posts small blind $0.01
+Sleve_McDichael: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [6h 7c]
+Darryl_Archideld: folds 
+Willie_Dustice: folds 
+Bobson_Dugnutt: folds 
+Scott_Dourque: folds 
+Mike_Truk: raises $0.04 to $0.06
+Tim_Sandaele: folds 
+Karl_Dandleton: calls $0.06
+Todd_Bonzalez: raises $0.06 to $0.12
+Sleve_McDichael: folds 
+Mike_Truk: calls $0.06
+Karl_Dandleton: calls $0.06
+*** FLOP *** [9c Qh 7s]
+Todd_Bonzalez: bets $0.37
+Mike_Truk: folds 
+Karl_Dandleton: folds 
+Uncalled bet ($0.37) returned to Todd_Bonzalez
+Todd_Bonzalez collected $0.37 from pot
+Todd_Bonzalez: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.38 | Rake $0.01 
+Board [9c Qh 7s]
+Seat 1: Sleve_McDichael (big blind) folded before Flop
+Seat 2: Darryl_Archideld folded before Flop (didn't bet)
+Seat 3: Willie_Dustice folded before Flop (didn't bet)
+Seat 4: Bobson_Dugnutt folded before Flop (didn't bet)
+Seat 5: Scott_Dourque folded before Flop (didn't bet)
+Seat 6: Mike_Truk folded on the Flop
+Seat 7: Tim_Sandaele folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton (button) folded on the Flop
+Seat 9: Todd_Bonzalez (small blind) collected ($0.37)
+
+
+
+PokerStarsCollection Hand #223646627150:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:52:34 WET [2021/02/10 10:52:34 ET]
+Table 'Ornamenta V' 9-max Seat #9 is the button
+Seat 1: Sleve_McDichael ($2.08 in chips) 
+Seat 2: Darryl_Archideld ($2 in chips) 
+Seat 3: Willie_Dustice ($5.03 in chips) 
+Seat 4: Bobson_Dugnutt ($2.35 in chips) 
+Seat 5: Scott_Dourque ($0.22 in chips) 
+Seat 6: Mike_Truk ($1.48 in chips) 
+Seat 7: Tim_Sandaele ($1.93 in chips) 
+Seat 8: Karl_Dandleton ($2.01 in chips) 
+Seat 9: Todd_Bonzalez ($1.72 in chips) 
+Sleve_McDichael: posts small blind $0.01
+Darryl_Archideld: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [4s 4c]
+Willie_Dustice: folds 
+Bobson_Dugnutt: calls $0.02
+Scott_Dourque: folds 
+Mike_Truk: folds 
+Tim_Sandaele: folds 
+Karl_Dandleton: raises $0.06 to $0.08
+Todd_Bonzalez: folds 
+Sleve_McDichael: folds 
+Darryl_Archideld: raises $0.19 to $0.27
+Bobson_Dugnutt: folds 
+Karl_Dandleton: folds 
+Uncalled bet ($0.19) returned to Darryl_Archideld
+Darryl_Archideld collected $0.19 from pot
+Darryl_Archideld: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.19 | Rake $0 
+Seat 1: Sleve_McDichael (small blind) folded before Flop
+Seat 2: Darryl_Archideld (big blind) collected ($0.19)
+Seat 3: Willie_Dustice folded before Flop (didn't bet)
+Seat 4: Bobson_Dugnutt folded before Flop
+Seat 5: Scott_Dourque folded before Flop (didn't bet)
+Seat 6: Mike_Truk folded before Flop (didn't bet)
+Seat 7: Tim_Sandaele folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton folded before Flop
+Seat 9: Todd_Bonzalez (button) folded before Flop (didn't bet)
+
+
+
+PokerStarsCollection Hand #223646640011:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:53:00 WET [2021/02/10 10:53:00 ET]
+Table 'Ornamenta V' 9-max Seat #1 is the button
+Seat 1: Sleve_McDichael ($2.07 in chips) 
+Seat 2: Darryl_Archideld ($2.11 in chips) 
+Seat 3: Willie_Dustice ($5.03 in chips) 
+Seat 4: Bobson_Dugnutt ($2.33 in chips) 
+Seat 5: Scott_Dourque ($0.22 in chips) 
+Seat 6: Mike_Truk ($1.48 in chips) 
+Seat 7: Tim_Sandaele ($1.93 in chips) 
+Seat 8: Karl_Dandleton ($2 in chips) 
+Seat 9: Todd_Bonzalez ($1.72 in chips) 
+Darryl_Archideld: posts small blind $0.01
+Willie_Dustice: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [5c 5d]
+Bobson_Dugnutt: calls $0.02
+Scott_Dourque: folds 
+Mike_Truk: calls $0.02
+Tim_Sandaele: folds 
+Karl_Dandleton: folds 
+Todd_Bonzalez: folds 
+Sleve_McDichael: raises $0.16 to $0.18
+Darryl_Archideld: folds 
+Willie_Dustice: folds 
+Bobson_Dugnutt: folds 
+Mike_Truk: folds 
+Uncalled bet ($0.16) returned to Sleve_McDichael
+Sleve_McDichael collected $0.09 from pot
+Sleve_McDichael: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.09 | Rake $0 
+Seat 1: Sleve_McDichael (button) collected ($0.09)
+Seat 2: Darryl_Archideld (small blind) folded before Flop
+Seat 3: Willie_Dustice (big blind) folded before Flop
+Seat 4: Bobson_Dugnutt folded before Flop
+Seat 5: Scott_Dourque folded before Flop (didn't bet)
+Seat 6: Mike_Truk folded before Flop
+Seat 7: Tim_Sandaele folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton folded before Flop (didn't bet)
+Seat 9: Todd_Bonzalez folded before Flop (didn't bet)
+
+
+
+PokerStarsCollection Hand #223646660480:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:53:42 WET [2021/02/10 10:53:42 ET]
+Table 'Ornamenta V' 9-max Seat #2 is the button
+Seat 1: Sleve_McDichael ($2.14 in chips) 
+Seat 2: Darryl_Archideld ($2.10 in chips) 
+Seat 3: Willie_Dustice ($5.01 in chips) 
+Seat 4: Bobson_Dugnutt ($2.31 in chips) 
+Seat 5: Scott_Dourque ($0.22 in chips) 
+Seat 6: Mike_Truk ($1.46 in chips) 
+Seat 7: Tim_Sandaele ($1.93 in chips) 
+Seat 8: Karl_Dandleton ($2 in chips) 
+Seat 9: Todd_Bonzalez ($1.72 in chips) 
+Willie_Dustice: posts small blind $0.01
+Bobson_Dugnutt: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [7d Ad]
+Scott_Dourque: folds 
+Mike_Truk: raises $0.04 to $0.06
+Tim_Sandaele: folds 
+Karl_Dandleton: calls $0.06
+Todd_Bonzalez: calls $0.06
+Sleve_McDichael: calls $0.06
+Darryl_Archideld: folds 
+Willie_Dustice: folds 
+Bobson_Dugnutt: calls $0.04
+*** FLOP *** [5d 2c 5c]
+Bobson_Dugnutt: checks 
+Mike_Truk: bets $0.10
+Karl_Dandleton: folds 
+Todd_Bonzalez: folds 
+Sleve_McDichael: folds 
+Bobson_Dugnutt: raises $0.30 to $0.40
+Mike_Truk: calls $0.30
+*** TURN *** [5d 2c 5c] [8s]
+Bobson_Dugnutt: checks 
+Mike_Truk: checks 
+*** RIVER *** [5d 2c 5c 8s] [7c]
+Bobson_Dugnutt: bets $0.50
+Mike_Truk: calls $0.50
+*** SHOW DOWN ***
+Bobson_Dugnutt: shows [7d Ad] (two pair, Sevens and Fives)
+Mike_Truk: shows [Js Jc] (two pair, Jacks and Fives)
+Mike_Truk collected $2.04 from pot
+*** SUMMARY ***
+Total pot $2.11 | Rake $0.07 
+Board [5d 2c 5c 8s 7c]
+Seat 1: Sleve_McDichael folded on the Flop
+Seat 2: Darryl_Archideld (button) folded before Flop (didn't bet)
+Seat 3: Willie_Dustice (small blind) folded before Flop
+Seat 4: Bobson_Dugnutt (big blind) showed [7d Ad] and lost with two pair, Sevens and Fives
+Seat 5: Scott_Dourque folded before Flop (didn't bet)
+Seat 6: Mike_Truk showed [Js Jc] and won ($2.04) with two pair, Jacks and Fives
+Seat 7: Tim_Sandaele folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton folded on the Flop
+Seat 9: Todd_Bonzalez folded on the Flop
+
+
+
+PokerStarsCollection Hand #223646703708:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:55:11 WET [2021/02/10 10:55:11 ET]
+Table 'Ornamenta V' 9-max Seat #3 is the button
+Seat 1: Sleve_McDichael ($2.08 in chips) 
+Seat 2: Darryl_Archideld ($2.10 in chips) 
+Seat 3: Willie_Dustice ($5 in chips) 
+Seat 4: Bobson_Dugnutt ($1.35 in chips) 
+Seat 5: Scott_Dourque ($0.22 in chips) 
+Seat 6: Mike_Truk ($2.54 in chips) 
+Seat 7: Tim_Sandaele ($1.93 in chips) 
+Seat 8: Karl_Dandleton ($2 in chips) 
+Seat 9: Todd_Bonzalez ($1.66 in chips) 
+Bobson_Dugnutt: posts small blind $0.01
+Scott_Dourque: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [As 3s]
+Mike_Truk: folds 
+Tim_Sandaele: folds 
+Karl_Dandleton: folds 
+Todd_Bonzalez: calls $0.02
+Sleve_McDichael: folds 
+Darryl_Archideld: raises $0.06 to $0.08
+Willie_Dustice: folds 
+Bobson_Dugnutt: calls $0.07
+Scott_Dourque: folds 
+Todd_Bonzalez: calls $0.06
+*** FLOP *** [Jd 4c Th]
+Bobson_Dugnutt: checks 
+Todd_Bonzalez: checks 
+Darryl_Archideld: bets $0.08
+Bobson_Dugnutt: folds 
+Todd_Bonzalez: folds 
+Uncalled bet ($0.08) returned to Darryl_Archideld
+Darryl_Archideld collected $0.25 from pot
+Darryl_Archideld: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.26 | Rake $0.01 
+Board [Jd 4c Th]
+Seat 1: Sleve_McDichael folded before Flop (didn't bet)
+Seat 2: Darryl_Archideld collected ($0.25)
+Seat 3: Willie_Dustice (button) folded before Flop (didn't bet)
+Seat 4: Bobson_Dugnutt (small blind) folded on the Flop
+Seat 5: Scott_Dourque (big blind) folded before Flop
+Seat 6: Mike_Truk folded before Flop (didn't bet)
+Seat 7: Tim_Sandaele folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton folded before Flop (didn't bet)
+Seat 9: Todd_Bonzalez folded on the Flop
+
+
+
+PokerStarsCollection Hand #223646734184:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:56:27 WET [2021/02/10 10:56:27 ET]
+Table 'Ornamenta V' 9-max Seat #4 is the button
+Seat 1: Sleve_McDichael ($2.08 in chips) 
+Seat 2: Darryl_Archideld ($2.27 in chips) 
+Seat 3: Willie_Dustice ($5 in chips) 
+Seat 4: Bobson_Dugnutt ($1.27 in chips) 
+Seat 5: Scott_Dourque ($0.20 in chips) 
+Seat 6: Mike_Truk ($2.54 in chips) 
+Seat 7: Tim_Sandaele ($1.93 in chips) 
+Seat 8: Karl_Dandleton ($2 in chips) 
+Seat 9: Todd_Bonzalez ($1.58 in chips) 
+Scott_Dourque: posts small blind $0.01
+Mike_Truk: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [6d Tc]
+Tim_Sandaele: folds 
+Karl_Dandleton: folds 
+Todd_Bonzalez: folds 
+Sleve_McDichael: raises $0.04 to $0.06
+Darryl_Archideld: folds 
+Willie_Dustice: folds 
+Bobson_Dugnutt: folds 
+Scott_Dourque: folds 
+Mike_Truk: folds 
+Uncalled bet ($0.04) returned to Sleve_McDichael
+Sleve_McDichael collected $0.05 from pot
+Sleve_McDichael: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.05 | Rake $0 
+Seat 1: Sleve_McDichael collected ($0.05)
+Seat 2: Darryl_Archideld folded before Flop (didn't bet)
+Seat 3: Willie_Dustice folded before Flop (didn't bet)
+Seat 4: Bobson_Dugnutt (button) folded before Flop (didn't bet)
+Seat 5: Scott_Dourque (small blind) folded before Flop
+Seat 6: Mike_Truk (big blind) folded before Flop
+Seat 7: Tim_Sandaele folded before Flop (didn't bet)
+Seat 8: Karl_Dandleton folded before Flop (didn't bet)
+Seat 9: Todd_Bonzalez folded before Flop (didn't bet)
+
+
+
+PokerStarsCollection Hand #223646742573:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:56:47 WET [2021/02/10 10:56:47 ET]
+Table 'Ornamenta V' 9-max Seat #5 is the button
+Seat 1: Sleve_McDichael ($2.11 in chips) 
+Seat 2: Darryl_Archideld ($2.27 in chips) 
+Seat 3: Willie_Dustice ($5 in chips) 
+Seat 4: Bobson_Dugnutt ($1.27 in chips) 
+Seat 5: Scott_Dourque ($0.19 in chips) 
+Seat 6: Mike_Truk ($2.52 in chips) 
+Seat 7: Tim_Sandaele ($1.93 in chips) 
+Seat 8: Karl_Dandleton ($2 in chips) 
+Seat 9: Todd_Bonzalez ($1.58 in chips) 
+Mike_Truk: posts small blind $0.01
+Tim_Sandaele: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [5s Jh]
+Karl_Dandleton: folds 
+Todd_Bonzalez: folds 
+Sleve_McDichael: calls $0.02
+Darryl_Archideld: calls $0.02
+Willie_Dustice: folds 
+Bobson_Dugnutt: raises $0.04 to $0.06
+Scott_Dourque: folds 
+Mike_Truk: folds 
+Tim_Sandaele: folds 
+Sleve_McDichael: folds 
+Darryl_Archideld: calls $0.04
+*** FLOP *** [Kh 3c 4s]
+Darryl_Archideld: checks 
+Bobson_Dugnutt: checks 
+*** TURN *** [Kh 3c 4s] [9c]
+Darryl_Archideld: bets $0.12
+Bobson_Dugnutt: folds 
+Uncalled bet ($0.12) returned to Darryl_Archideld
+Darryl_Archideld collected $0.16 from pot
+Darryl_Archideld: doesn't show hand 
+*** SUMMARY ***
+Total pot $0.17 | Rake $0.01 
+Board [Kh 3c 4s 9c]
+Seat 1: Sleve_McDichael folded before Flop
+Seat 2: Darryl_Archideld collected ($0.16)
+Seat 3: Willie_Dustice folded before Flop (didn't bet)
+Seat 4: Bobson_Dugnutt folded on the Turn
+Seat 5: Scott_Dourque (button) folded before Flop (didn't bet)
+Seat 6: Mike_Truk (small blind) folded before Flop
+Seat 7: Tim_Sandaele (big blind) folded before Flop
+Seat 8: Karl_Dandleton folded before Flop (didn't bet)
+Seat 9: Todd_Bonzalez folded before Flop (didn't bet)
+
+
+
+PokerStarsCollection Hand #223646760069:  Hold'em No Limit ($0.01/$0.02 USD) - 2021/02/10 15:57:31 WET [2021/02/10 10:57:31 ET]
+Table 'Ornamenta V' 9-max Seat #6 is the button
+Seat 1: Sleve_McDichael ($2.09 in chips) 
+Seat 2: Darryl_Archideld ($2.37 in chips) 
+Seat 3: Willie_Dustice ($5 in chips) 
+Seat 4: Bobson_Dugnutt ($1.21 in chips) 
+Seat 5: Scott_Dourque ($0.19 in chips) 
+Seat 6: Mike_Truk ($2.51 in chips) 
+Seat 7: Tim_Sandaele ($1.91 in chips) 
+Seat 8: Karl_Dandleton ($2 in chips) 
+Seat 9: Todd_Bonzalez ($1.58 in chips) 
+Tim_Sandaele: posts small blind $0.01
+Karl_Dandleton: posts big blind $0.02
+*** HOLE CARDS ***
+Dealt to Bobson_Dugnutt [8s 7c]
+Todd_Bonzalez: folds 
+Sleve_McDichael: folds 
+Darryl_Archideld: folds 
+Willie_Dustice: folds 
+Bobson_Dugnutt: calls $0.02
+Scott_Dourque: folds 
+Mike_Truk: raises $0.04 to $0.06
+Tim_Sandaele: folds 
+Karl_Dandleton: folds 
+Bobson_Dugnutt: calls $0.04
+*** FLOP *** [4s 9d Ts]
+Bobson_Dugnutt: bets $0.07
+Mike_Truk: raises $0.07 to $0.14
+Bobson_Dugnutt: calls $0.07
+*** TURN *** [4s 9d Ts] [3d]
+Bobson_Dugnutt: bets $0.21
+Darryl_Archideld leaves the table
+Mike_Truk: calls $0.21
+*** RIVER *** [4s 9d Ts 3d] [3s]
+cornel_IATOT joins the table at seat #2 
+Bobson_Dugnutt: bets $0.80 and is all-in
+Mike_Truk: calls $0.80
+*** SHOW DOWN ***
+Bobson_Dugnutt: shows [8s 7c] (a pair of Threes)
+Mike_Truk: shows [Qd Qc] (two pair, Queens and Threes)
+Mike_Truk collected $2.36 from pot
+*** SUMMARY ***
+Total pot $2.45 | Rake $0.09 
+Board [4s 9d Ts 3d 3s]
+Seat 1: Sleve_McDichael folded before Flop (didn't bet)
+Seat 2: Darryl_Archideld folded before Flop (didn't bet)
+Seat 3: Willie_Dustice folded before Flop (didn't bet)
+Seat 4: Bobson_Dugnutt showed [8s 7c] and lost with a pair of Threes
+Seat 5: Scott_Dourque folded before Flop (didn't bet)
+Seat 6: Mike_Truk (button) showed [Qd Qc] and won ($2.36) with two pair, Queens and Threes
+Seat 7: Tim_Sandaele (small blind) folded before Flop
+Seat 8: Karl_Dandleton (big blind) folded before Flop
+Seat 9: Todd_Bonzalez folded before Flop (didn't bet)
+
+
+
