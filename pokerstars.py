@@ -450,6 +450,7 @@ class PokerStarsCollection(object):
         encoding="ISO-8859-14",
         hero="Bobson_Dugnutt",
         write_files=False,
+        max_games=None
     ):
 
         self.suits = {"c": "clubs", "s": "spades", "d": "diamonds", "h": "hearts"}
@@ -482,6 +483,11 @@ class PokerStarsCollection(object):
         self.working_dir = working_dir
         self.hero = hero
         self.hero_cards = None
+
+        if not max_games:
+            self.max_games = 0
+        else:
+            self.max_games = max_games
 
         self.encoding = encoding
         self.games_text = self.process_file(split_files=write_files)
@@ -652,6 +658,8 @@ class PokerStarsCollection(object):
 
         i = 0
         for key, game in self.games_text.items():
+            if self.max_games and i >= self.max_games:
+                break
             self.games_data[key] = self.read_pokerstars_file(lines=game, game_index=i)
             i += 1
 
@@ -706,7 +714,7 @@ class PokerStarsCollection(object):
                         if split_files:
                             wf.close()
                         file_number += 1
-
+        print("Finished file splitting into individual games")
         return files_dict
 
     @staticmethod
