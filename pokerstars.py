@@ -9,6 +9,7 @@ import pandas as pd
 from collections import Counter
 from src.poker_main import *
 import pyarrow
+from data_catagories import full_column_headings
 
 
 class PokerStarsGame(object):
@@ -22,7 +23,8 @@ class PokerStarsGame(object):
             data,
             table_cards,
             winners,
-            winning_hands,
+            winning_hands=None,
+            winning_rankings=None,
             hero="bobsondugnutt11",
             game_index=0,
             hero_cards=None,
@@ -40,6 +42,8 @@ class PokerStarsGame(object):
                 List of the winners of the game
             winning_hands (list):
                 List of hands that won the game
+            winning_rankings (list):
+                Highest ranking of cards that won
             hero: (str)
                 Name of player defined as hero
             game_index (int):
@@ -75,6 +79,8 @@ class PokerStarsGame(object):
         self.game_text = game_text
         self.winners = winners
         self.winning_hands = winning_hands
+        self.winning_rankings = winning_rankings
+
         self.hero = hero
         self.hero_cards = hero_cards
 
@@ -115,173 +121,7 @@ class PokerStarsGame(object):
 
         self.final_pot = self.get_final_pot()
 
-        self.all_column_labels = [
-            # General Data
-            "Player Name",
-            "Stakes",
-            "Max Players",
-            "Game Type",
-            "Date",
-            "Time",
-            "Game Code",
-            "Table Name",
-            "Chips ($)",
-            "Chips (BB)",
-            "Player Cards",
-            "Position",
-            "Flop Card 1",
-            "Flop Card 2",
-            "Flop Card 3",
-            "Turn Card",
-            "River Card",
-            # pre-flop
-            "Check Pre-Flop",
-            "Pre-Flop Limp",
-            "Pre-Flop Raise",
-            "Pre-Flop Raise Size",
-            "Pre-Flop Raise to",
-            "Called Pre-Flop Raise",
-            "Called Pre-Flop Raise size",
-            "Fold to Pre-Flop Raise",
-            "Pre-Flop 3-Bet",
-            "Pre-Flop 3-Bet Size",
-            "Pre-Flop 3-Bet to",
-            "Called Pre-Flop 3-Bet",
-            "Called Pre-Flop 3-Bet Size",
-            "Fold to Pre-Flop 3-Bet",
-            "Pre-Flop 4-Bet",
-            "Pre-Flop 4-Bet Size",
-            "Pre-Flop 4-Bet to",
-            "Called Pre-Flop 4-Bet",
-            "Called Pre-Flop 4-Bet Size",
-            "Fold to Pre-Flop 4-Bet",
-            "Pre-Flop 5-Bet",
-            "Pre-Flop 5-Bet Size",
-            "Pre-Flop 5-Bet to",
-            "Called Pre-Flop 5-Bet",
-            "Called Pre-Flop 5-Bet Size",
-            "Fold to Pre-Flop 5-Bet",
-            "Pre-Flop 6-Bet",
-            "Pre-Flop 6-Bet Size",
-            "Pre-Flop 6-Bet to",
-            "Called Pre-Flop 6-Bet",
-            "Called Pre-Flop 6-Bet Size",
-            "Fold to Pre-Flop 6-Bet",
-            # flop
-            "Check Flop",
-            "Flop Raise",
-            "Flop Raise Size",
-            "Flop Raise to",
-            "Called Flop Raise",
-            "Called Flop Raise size",
-            "Fold to Flop Raise",
-            "Flop Re-raise",
-            "Flop Re-raise Size",
-            "Flop Re-raise to",
-            "Called Flop Re-raise",
-            "Called Flop Re-raise Size",
-            "Fold to Flop Re-raise",
-            "Flop 3-Bet",
-            "Flop 3-Bet Size",
-            "Flop 3-Bet to",
-            "Called Flop 3-Bet",
-            "Called Flop 3-Bet Size",
-            "Fold to Flop 3-Bet",
-            "Flop 4-Bet",
-            "Flop 4-Bet Size",
-            "Flop 4-Bet to",
-            "Called Flop 4-Bet",
-            "Called Flop 4-Bet Size",
-            "Fold to Flop 4-Bet",
-            "Flop 5-Bet",
-            "Flop 5-Bet Size",
-            "Flop 5-Bet to",
-            "Called Flop 5-Bet",
-            "Called Flop 5-Bet Size",
-            "Fold to Flop 5-Bet",
-            "Flop 6-Bet",
-            "Flop 6-Bet Size",
-            "Flop 6-Bet to",
-            "Called Flop 6-Bet",
-            "Called Flop 6-Bet Size",
-            "Fold to Flop 6-Bet",
-            # Turn
-            "Check Turn",
-            "Turn Raise",
-            "Turn Raise Size",
-            "Turn Raise to",
-            "Called Turn Raise",
-            "Called Turn Raise size",
-            "Fold to Turn Raise",
-            "Turn Re-raise",
-            "Turn Re-raise Size",
-            "Turn Re-raise to",
-            "Called Turn Re-raise",
-            "Called Turn Re-raise Size",
-            "Fold to Turn Re-raise",
-            "Turn 3-Bet",
-            "Turn 3-Bet Size",
-            "Turn 3-Bet to",
-            "Called Turn 3-Bet",
-            "Called Turn 3-Bet Size",
-            "Fold to Turn 3-Bet",
-            "Turn 4-Bet",
-            "Turn 4-Bet Size",
-            "Turn 4-Bet to",
-            "Called Turn 4-Bet",
-            "Called Turn 4-Bet Size",
-            "Fold to Turn 4-Bet",
-            "Turn 5-Bet",
-            "Turn 5-Bet Size",
-            "Turn 5-Bet to",
-            "Called Turn 5-Bet",
-            "Called Turn 5-Bet Size",
-            "Fold to Turn 5-Bet",
-            "Turn 6-Bet",
-            "Turn 6-Bet Size",
-            "Turn 6-Bet to",
-            "Called Turn 6-Bet",
-            "Called Turn 6-Bet Size",
-            "Fold to Turn 6-Bet",
-            # River
-            "Check River",
-            "River Raise",
-            "River Raise Size",
-            "River Raise to",
-            "Called River Raise",
-            "Called River Raise size",
-            "Fold to River Raise",
-            "River Re-raise",
-            "River Re-raise Size",
-            "River Re-raise to",
-            "Called River Re-raise",
-            "Called River Re-raise Size",
-            "Fold to River Re-raise",
-            "River 3-Bet",
-            "River 3-Bet Size",
-            "River 3-Bet to",
-            "Called River 3-Bet",
-            "Called River 3-Bet Size",
-            "Fold to River 3-Bet",
-            "River 4-Bet",
-            "River 4-Bet Size",
-            "River 4-Bet to",
-            "Called River 4-Bet",
-            "Called River 4-Bet Size",
-            "Fold to River 4-Bet",
-            "River 5-Bet",
-            "River 5-Bet Size",
-            "River 5-Bet to",
-            "Called River 5-Bet",
-            "Called River 5-Bet Size",
-            "Fold to River 5-Bet",
-            "River 6-Bet",
-            "River 6-Bet Size",
-            "River 6-Bet to",
-            "Called River 6-Bet",
-            "Called River 6-Bet Size",
-            "Fold to River 6-Bet",
-        ]
+        self.all_column_labels = full_column_headings
 
         if "Zoom" in self.game_text[0]:
             self.game_type = "Zoom"
@@ -317,6 +157,9 @@ class PokerStarsGame(object):
             "Flop Card 3": self.flop_card_3,
             "Turn Card": self.turn_card,
             "River Card": self.river_card,
+            "Winners": str(self.winners),
+            "Winning Hands": str(self.winning_hands),
+            "Winning Rankings": str(self.winning_rankings)
         }
 
     def reorder_columns(self, df):
@@ -519,174 +362,7 @@ class PokerStarsCollection(object):
         self.games_text = self.process_file(split_files=write_files)
         self.games_data = {}
 
-        self.all_column_labels = [
-            # General Data
-            "Player Name",
-            "Stakes",
-            "Max Players",
-            "Game Type",
-            "Date",
-            "Time",
-            "Game Code",
-            "Table Name",
-            "Chips ($)",
-            "Chips (BB)",
-            "Player Cards",
-            "Position",
-
-            "Flop Card 1",
-            "Flop Card 2",
-            "Flop Card 3",
-            "Turn Card",
-            "River Card",
-            # pre-flop
-            "Check Pre-Flop",
-            "Pre-Flop Limp",
-            "Pre-Flop Raise",
-            "Pre-Flop Raise Size",
-            "Pre-Flop Raise to",
-            "Called Pre-Flop Raise",
-            "Called Pre-Flop Raise size",
-            "Fold to Pre-Flop Raise",
-            "Pre-Flop 3-Bet",
-            "Pre-Flop 3-Bet Size",
-            "Pre-Flop 3-Bet to",
-            "Called Pre-Flop 3-Bet",
-            "Called Pre-Flop 3-Bet Size",
-            "Fold to Pre-Flop 3-Bet",
-            "Pre-Flop 4-Bet",
-            "Pre-Flop 4-Bet Size",
-            "Pre-Flop 4-Bet to",
-            "Called Pre-Flop 4-Bet",
-            "Called Pre-Flop 4-Bet Size",
-            "Fold to Pre-Flop 4-Bet",
-            "Pre-Flop 5-Bet",
-            "Pre-Flop 5-Bet Size",
-            "Pre-Flop 5-Bet to",
-            "Called Pre-Flop 5-Bet",
-            "Called Pre-Flop 5-Bet Size",
-            "Fold to Pre-Flop 5-Bet",
-            "Pre-Flop 6-Bet",
-            "Pre-Flop 6-Bet Size",
-            "Pre-Flop 6-Bet to",
-            "Called Pre-Flop 6-Bet",
-            "Called Pre-Flop 6-Bet Size",
-            "Fold to Pre-Flop 6-Bet",
-            # flop
-            "Check Flop",
-            "Flop Raise",
-            "Flop Raise Size",
-            "Flop Raise to",
-            "Called Flop Raise",
-            "Called Flop Raise size",
-            "Fold to Flop Raise",
-            "Flop Re-raise",
-            "Flop Re-raise Size",
-            "Flop Re-raise to",
-            "Called Flop Re-raise",
-            "Called Flop Re-raise Size",
-            "Fold to Flop Re-raise",
-            "Flop 3-Bet",
-            "Flop 3-Bet Size",
-            "Flop 3-Bet to",
-            "Called Flop 3-Bet",
-            "Called Flop 3-Bet Size",
-            "Fold to Flop 3-Bet",
-            "Flop 4-Bet",
-            "Flop 4-Bet Size",
-            "Flop 4-Bet to",
-            "Called Flop 4-Bet",
-            "Called Flop 4-Bet Size",
-            "Fold to Flop 4-Bet",
-            "Flop 5-Bet",
-            "Flop 5-Bet Size",
-            "Flop 5-Bet to",
-            "Called Flop 5-Bet",
-            "Called Flop 5-Bet Size",
-            "Fold to Flop 5-Bet",
-            "Flop 6-Bet",
-            "Flop 6-Bet Size",
-            "Flop 6-Bet to",
-            "Called Flop 6-Bet",
-            "Called Flop 6-Bet Size",
-            "Fold to Flop 6-Bet",
-            # Turn
-            "Check Turn",
-            "Turn Raise",
-            "Turn Raise Size",
-            "Turn Raise to",
-            "Called Turn Raise",
-            "Called Turn Raise size",
-            "Fold to Turn Raise",
-            "Turn Re-raise",
-            "Turn Re-raise Size",
-            "Turn Re-raise to",
-            "Called Turn Re-raise",
-            "Called Turn Re-raise Size",
-            "Fold to Turn Re-raise",
-            "Turn 3-Bet",
-            "Turn 3-Bet Size",
-            "Turn 3-Bet to",
-            "Called Turn 3-Bet",
-            "Called Turn 3-Bet Size",
-            "Fold to Turn 3-Bet",
-            "Turn 4-Bet",
-            "Turn 4-Bet Size",
-            "Turn 4-Bet to",
-            "Called Turn 4-Bet",
-            "Called Turn 4-Bet Size",
-            "Fold to Turn 4-Bet",
-            "Turn 5-Bet",
-            "Turn 5-Bet Size",
-            "Turn 5-Bet to",
-            "Called Turn 5-Bet",
-            "Called Turn 5-Bet Size",
-            "Fold to Turn 5-Bet",
-            "Turn 6-Bet",
-            "Turn 6-Bet Size",
-            "Turn 6-Bet to",
-            "Called Turn 6-Bet",
-            "Called Turn 6-Bet Size",
-            "Fold to Turn 6-Bet",
-            # River
-            "Check River",
-            "River Raise",
-            "River Raise Size",
-            "River Raise to",
-            "Called River Raise",
-            "Called River Raise size",
-            "Fold to River Raise",
-            "River Re-raise",
-            "River Re-raise Size",
-            "River Re-raise to",
-            "Called River Re-raise",
-            "Called River Re-raise Size",
-            "Fold to River Re-raise",
-            "River 3-Bet",
-            "River 3-Bet Size",
-            "River 3-Bet to",
-            "Called River 3-Bet",
-            "Called River 3-Bet Size",
-            "Fold to River 3-Bet",
-            "River 4-Bet",
-            "River 4-Bet Size",
-            "River 4-Bet to",
-            "Called River 4-Bet",
-            "Called River 4-Bet Size",
-            "Fold to River 4-Bet",
-            "River 5-Bet",
-            "River 5-Bet Size",
-            "River 5-Bet to",
-            "Called River 5-Bet",
-            "Called River 5-Bet Size",
-            "Fold to River 5-Bet",
-            "River 6-Bet",
-            "River 6-Bet Size",
-            "River 6-Bet to",
-            "Called River 6-Bet",
-            "Called River 6-Bet Size",
-            "Fold to River 6-Bet",
-        ]
+        self.all_column_labels = full_column_headings
 
         i = 0
         for key, game in self.games_text.items():
@@ -1027,6 +703,7 @@ class PokerStarsCollection(object):
         data = {}
         winners = []
         winning_hands = []
+        winning_rankings = []
         for line in lines_list:
             if "showed" in line:
                 a = re.sub("\(.*\)", "", line.split("showed")[0])
@@ -1035,6 +712,7 @@ class PokerStarsCollection(object):
                 if "won" in line:
                     if "showed" in line:
                         winning_hands.append(data[b])
+                        winning_rankings.append(line.split("with")[1])
                     winners.append(b)
             elif "mucked" in line:
                 a = re.sub("\(.*\)", "", line.split("mucked")[0])
@@ -1052,6 +730,7 @@ class PokerStarsCollection(object):
             pd.DataFrame(data.values(), index=data.keys(), columns=["Player Cards"]),
             winners,
             winning_hands,
+            winning_rankings
         )
 
     @staticmethod
@@ -1094,7 +773,7 @@ class PokerStarsCollection(object):
             except KeyError:
                 break
 
-        data_dict["summary"], winners, winning_hands = self.read_summary(
+        data_dict["summary"], winners, winning_hands, winning_rankings = self.read_summary(
             game_text["SUMMARY"]
         )
 
@@ -1115,13 +794,14 @@ class PokerStarsCollection(object):
             ],
             axis=1,
         )
-
+        print(winning_hands, winning_rankings)
         game = PokerStarsGame(
             [item for sublist in game_text.values() for item in sublist],
             events_df,
             table_cards,
             winners=winners,
             winning_hands=winning_hands,
+            winning_rankings=winning_rankings,
             game_index=game_index,
         )
         return game
