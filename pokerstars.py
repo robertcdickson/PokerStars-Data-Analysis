@@ -82,6 +82,10 @@ class PokerStarsGame(object):
         self.turn_card = None
         self.river_card = None
 
+        self.flop_card_1 = None
+        self.flop_card_2 = None
+        self.flop_card_3 = None
+
         if table_cards:
             self.table_cards = table_cards
             if len(table_cards) >= 3:
@@ -92,6 +96,11 @@ class PokerStarsGame(object):
                 self.river_card = table_cards[4]
         else:
             self.table_cards = None
+
+        if self.flop_cards:
+            self.flop_card_1 = self.flop_cards[0]
+            self.flop_card_2 = self.flop_cards[1]
+            self.flop_card_3 = self.flop_cards[2]
 
         self.big_blind = self.get_blind("BB")
         self.small_blind = self.get_blind("SB")
@@ -120,6 +129,11 @@ class PokerStarsGame(object):
             "Chips (BB)",
             "Player Cards",
             "Position",
+            "Flop Card 1",
+            "Flop Card 2",
+            "Flop Card 3",
+            "Turn Card",
+            "River Card",
             # pre-flop
             "Check Pre-Flop",
             "Pre-Flop Limp",
@@ -298,6 +312,11 @@ class PokerStarsGame(object):
             "Time": self.time,
             "Max Players": self.max_players,
             "Table Name": self.table_name,
+            "Flop Card 1": self.flop_card_1,
+            "Flop Card 2": self.flop_card_2,
+            "Flop Card 3": self.flop_card_3,
+            "Turn Card": self.turn_card,
+            "River Card": self.river_card,
         }
 
     def reorder_columns(self, df):
@@ -514,6 +533,12 @@ class PokerStarsCollection(object):
             "Chips (BB)",
             "Player Cards",
             "Position",
+
+            "Flop Card 1",
+            "Flop Card 2",
+            "Flop Card 3",
+            "Turn Card",
+            "River Card",
             # pre-flop
             "Check Pre-Flop",
             "Pre-Flop Limp",
