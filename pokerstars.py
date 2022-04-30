@@ -97,16 +97,16 @@ class PokerStarsGame(object):
             if len(table_cards) >= 3:
                 self.flop_cards = table_cards[0:3]
             if len(table_cards) >= 4:
-                self.turn_card = table_cards[3]
+                self.turn_card = table_cards[3].string
             if len(table_cards) == 5:
-                self.river_card = table_cards[4]
+                self.river_card = table_cards[4].string
         else:
             self.table_cards = None
 
         if self.flop_cards:
-            self.flop_card_1 = self.flop_cards[0]
-            self.flop_card_2 = self.flop_cards[1]
-            self.flop_card_3 = self.flop_cards[2]
+            self.flop_card_1 = self.flop_cards[0].string
+            self.flop_card_2 = self.flop_cards[1].string
+            self.flop_card_3 = self.flop_cards[2].string
 
         self.big_blind = self.get_blind("BB")
         self.small_blind = self.get_blind("SB")
@@ -794,7 +794,6 @@ class PokerStarsCollection(object):
             ],
             axis=1,
         )
-        print(winning_hands, winning_rankings)
         game = PokerStarsGame(
             [item for sublist in game_text.values() for item in sublist],
             events_df,
