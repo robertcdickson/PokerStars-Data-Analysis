@@ -2,6 +2,8 @@ full_column_headings = [
     # General Data
     "Player Name",
     "Stakes",
+    "Small Blind",
+    "Big Blind",
     "Max Players",
     "Game Type",
     "Date",
@@ -21,6 +23,7 @@ full_column_headings = [
     "Winning Hands",
     "Winning Rankings",
     # pre-flop
+
     "Check Pre-Flop",
     "Pre-Flop Limp",
     "Pre-Flop Raise",
@@ -53,6 +56,8 @@ full_column_headings = [
     "Called Pre-Flop 6-Bet",
     "Called Pre-Flop 6-Bet Size",
     "Fold to Pre-Flop 6-Bet",
+    "Pre-Flop Final Pot ($)",
+
     # flop
     "Check Flop",
     "Flop Raise",
@@ -91,6 +96,8 @@ full_column_headings = [
     "Called Flop 6-Bet",
     "Called Flop 6-Bet Size",
     "Fold to Flop 6-Bet",
+    "Flop Final Pot ($)",
+
     # Turn
     "Check Turn",
     "Turn Raise",
@@ -129,6 +136,8 @@ full_column_headings = [
     "Called Turn 6-Bet",
     "Called Turn 6-Bet Size",
     "Fold to Turn 6-Bet",
+    "Turn Final Pot ($)",
+
     # River
     "Check River",
     "River Raise",
@@ -167,4 +176,10 @@ full_column_headings = [
     "Called River 6-Bet",
     "Called River 6-Bet Size",
     "Fold to River 6-Bet",
+    "River Final Pot ($)"
+
+    # "Pot Increase Pre-Flop",
+    # "Pot Increase Flop",
+    # "Pot Increase Turn",
+    # "Pot Increase River",
 ]

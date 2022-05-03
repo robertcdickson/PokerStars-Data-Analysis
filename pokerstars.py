@@ -11,6 +11,8 @@ from src.poker_main import *
 import pyarrow
 from data_catagories import full_column_headings
 
+# TODO: pot size at each betting stage
+# TODO: make Player data profile class
 
 class PokerStarsGame(object):
     """
@@ -24,7 +26,7 @@ class PokerStarsGame(object):
         table_cards,
         winners,
         winning_hands=None,
-        winning_rankings=None,
+        winning_ranking=None,
         hero="bobsondugnutt11",
         game_index=0,
         hero_cards=None,
@@ -42,7 +44,7 @@ class PokerStarsGame(object):
                 List of the winners of the game
             winning_hands (list):
                 List of hands that won the game
-            winning_rankings (list):
+            winning_ranking (str):
                 Highest ranking of cards that won
             hero: (str)
                 Name of player defined as hero
@@ -79,7 +81,7 @@ class PokerStarsGame(object):
         self.game_text = game_text
         self.winners = winners
         self.winning_hands = winning_hands
-        self.winning_rankings = winning_rankings
+        self.winning_rankings = winning_ranking
 
         self.hero = hero
         self.hero_cards = hero_cards
@@ -375,6 +377,7 @@ class PokerStarsCollection(object):
         self.full_data = pd.concat(
             [x.get_full_data() for x in self.games_data.values()]
         )
+        print(self.full_data)
         self.full_data = self.full_data.reset_index(drop=True)
         self.full_data = self.reorder_columns()
 
@@ -503,11 +506,20 @@ class PokerStarsCollection(object):
 
     def read_pre_deal_lines(self, player_list):
 
+        stakes = None
         data_dict = {"Player Name": [], "Seat Number": [], "Chips ($)": []}
 
         button_seat = int(re.search("#\d", player_list[1]).group().strip("#"))
-
+        stakes = []
+        small_blind = 0
+        big_blind = 0
         for line in player_list:
+            if "PokerStars" in line:
+                stakes = line.split("(")[1].split(")")[0].split("/")
+                small_blind = stakes[0].lstrip("$")
+                big_blind = stakes[1].lstrip("$")
+
+
             player = re.findall(":.*\(", line)
             if player and "chips" in line:
                 # get hero name and number of chips
@@ -516,7 +528,7 @@ class PokerStarsCollection(object):
                 # get different pieces of data pre dealing
                 seat_number = int(line_list[1].strip(":"))
                 player_name = re.sub("[:\( ]", "", player[0])
-                chips = float(line_list[-4].strip("($"))  # THIS MAY BE A PROBLEM TEST
+                chips = float(line_list[-4].strip("($"))  # TODO: THIS MAY BE A PROBLEM TEST
 
                 data_dict["Player Name"].append(player_name)
                 data_dict["Seat Number"].append(seat_number)
@@ -536,32 +548,26 @@ class PokerStarsCollection(object):
             for seat in new_seat_order
         ]
 
-        """for seat in new_seat_order:
-            if int(seat) - new_button < 0:
-                data_dict["Play Order"].append(
-                    seat - new_button + len(data_dict["Seat Number"])
-                )
-            elif int(seat) - new_button > 0:
-                data_dict["Play Order"].append(seat - new_button)
-            else:
-                data_dict["Play Order"].append(len(data_dict["Seat Number"]))"""
-
         data_dict["Betting Order"] = [
             i - 2 if i - 2 > 0 else i - 2 + len(data_dict["Play Order"])
             for i in data_dict["Play Order"]
         ]
-        data_dict["Big Blind"] = [
+        data_dict["Is Big Blind"] = [
             True if j == 2 else False for j in data_dict["Play Order"]
         ]
-        data_dict["Small Blind"] = [
+        data_dict["Is Small Blind"] = [
             True if j == 1 else False for j in data_dict["Play Order"]
         ]
 
         data_df = pd.DataFrame(data_dict).set_index(["Player Name"])
+        data_df["Small Blind"] = float(small_blind)
+        data_df["Big Blind"] = float(big_blind)
+
         return data_df
 
     def read_betting_action(self, lines_list, play_phase=None):
         data = {}
+        pot = 0.0
 
         # pre-flop there has been a bet due to big blind
         if play_phase == "Pre-Flop":
@@ -612,6 +618,7 @@ class PokerStarsCollection(object):
                     data[player_name][play_phase + " Raise Size"] = bet_data[1].strip(
                         "$"
                     )
+                    pot += float(bet_data[1].strip("$"))
 
                 elif "calls" in action:
                     call_data = action.split()
@@ -619,6 +626,8 @@ class PokerStarsCollection(object):
 
                     # if player open limps
                     if number_of_raises == 1 and play_phase == "Pre-flop":
+                        # TODO: Limping is not yet implemented
+
                         data[player_name][play_phase + " Limp"] = True
 
                     # else calling a bet
@@ -635,6 +644,8 @@ class PokerStarsCollection(object):
                             data[player_name][
                                 "Called " + play_phase + f" {number_of_raises}-Bet Size"
                             ] = call_data[1].strip("$")
+                    pot += float(call_data[1].strip("$"))
+
                 elif "checks" in action:
                     data[player_name]["Check " + play_phase] = True
 
@@ -678,8 +689,11 @@ class PokerStarsCollection(object):
                             play_phase + f" {number_of_raises}-Bet to"
                         ] = raise_data[3].strip("$")
 
+                    pot += float(raise_data[3].strip("$"))
+
         normalised_dict = dict([(k, pd.Series(v)) for k, v in data.items()])
         df = pd.DataFrame(normalised_dict).transpose()
+        df["Pot Increase " + play_phase] = pot
 
         # set all fill na needed
         nan_inplace_value_columns = ["Raise", "Re-raise", "3-Bet", "4-Bet", "5-Bet"]
@@ -692,8 +706,6 @@ class PokerStarsCollection(object):
         for x in nan_inplace_value_columns:
             if x in df.columns:
                 df[x].fillna(False, inplace=True)
-        # df["pre-flop 5-bet"].fillna(False, inplace=True)
-        # df.columns = [f"{play_phase.capitalize()} Action {i}" for i in range(1, len(df.columns) + 1)]
 
         return df
 
@@ -706,7 +718,7 @@ class PokerStarsCollection(object):
         data = {}
         winners = []
         winning_hands = []
-        winning_rankings = []
+        winning_ranking = None
         for line in lines_list:
             if "showed" in line:
                 a = re.sub("\(.*\)", "", line.split("showed")[0])
@@ -715,7 +727,7 @@ class PokerStarsCollection(object):
                 if "won" in line:
                     if "showed" in line:
                         winning_hands.append(data[b])
-                        winning_rankings.append(line.split("with")[1])
+                        winning_ranking = line.split("with")[1].strip(" \n")
                     winners.append(b)
             elif "mucked" in line:
                 a = re.sub("\(.*\)", "", line.split("mucked")[0])
@@ -733,7 +745,7 @@ class PokerStarsCollection(object):
             pd.DataFrame(data.values(), index=data.keys(), columns=["Player Cards"]),
             winners,
             winning_hands,
-            winning_rankings,
+            winning_ranking,
         )
 
     @staticmethod
@@ -755,6 +767,7 @@ class PokerStarsCollection(object):
         Returns:
             events df (pandas df)
         """
+        total_pot = 0
 
         # dictionary will later be converted to a pandas df
         data_dict = {}
@@ -780,13 +793,24 @@ class PokerStarsCollection(object):
             data_dict["summary"],
             winners,
             winning_hands,
-            winning_rankings,
+            winning_ranking,
         ) = self.read_summary(game_text["SUMMARY"])
 
         events_df = pd.concat([val for val in data_dict.values()], axis=1)
         events_df["Player Name"] = list(events_df.index)
         events_df.reset_index(inplace=True)
         events_df["Position"] = events_df["Seat Number"].map(self.seats)
+
+        events_df["Pre-Flop Final Pot ($)"] = events_df["Small Blind"] + \
+                                          events_df["Big Blind"] + \
+                                          events_df["Pot Increase Pre-Flop"]
+
+        if "Flop" in data_dict.keys():
+            events_df["Flop Final Pot ($)"] = events_df["Pot Increase Flop"] + events_df["Pre-Flop Final Pot ($)"]
+        if "Turn" in data_dict.keys():
+            events_df["Turn Final Pot ($)"] = events_df["Pot Increase Turn"] + events_df["Flop Final Pot ($)"]
+        if "River" in data_dict.keys():
+            events_df["River Final Pot ($)"] = events_df["Pot Increase River"] + events_df["Turn Final Pot ($)"]
 
         # these columns seem a bit useless so adding this as a temporary
         events_df = events_df.drop(
@@ -795,8 +819,8 @@ class PokerStarsCollection(object):
                 "Seat Number",
                 "Play Order",
                 "Betting Order",
-                "Big Blind",
-                "Small Blind",
+                "Is Big Blind",
+                "Is Small Blind",
             ],
             axis=1,
         )
@@ -806,7 +830,7 @@ class PokerStarsCollection(object):
             table_cards,
             winners=winners,
             winning_hands=winning_hands,
-            winning_rankings=winning_rankings,
+            winning_ranking=winning_ranking,
             game_index=game_index,
         )
         return game
