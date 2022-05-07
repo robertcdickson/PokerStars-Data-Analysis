@@ -4,7 +4,6 @@ import random
 import re
 import sys
 
-import pandas
 import pandas as pd
 from collections import Counter
 from src.poker_main import *
@@ -514,8 +513,10 @@ class PokerStarsCollection(object):
         small_blind = 0
         big_blind = 0
         for line in player_list:
-            if "PokerStars" in line:
-                stakes = line.split("(")[1].split(")")[0].split("/")
+            if line.startswith("PokerStars "):
+                stakes = line.split("(")[1]
+                stakes = stakes.split(")")[0]
+                stakes = stakes.split("/")
                 small_blind = stakes[0].lstrip("$")
                 big_blind = stakes[1].lstrip("$")
 
