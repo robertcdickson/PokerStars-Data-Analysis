@@ -624,9 +624,8 @@ class PokerStarsCollection(object):
                 elif "calls" in action:
                     call_data = action.split()
                     number_of_calls += 1
-
                     # if player open limps
-                    if number_of_raises == 1 and play_phase == "Pre-flop":
+                    if number_of_raises == 1 and play_phase == "Pre-Flop":
                         # TODO: Limping is not yet implemented
 
                         data[player_name][play_phase + " Limp"] = True
@@ -697,7 +696,7 @@ class PokerStarsCollection(object):
         df["Pot Increase " + play_phase] = pot
 
         # set all fill na needed
-        nan_inplace_value_columns = ["Raise", "Re-raise", "3-Bet", "4-Bet", "5-Bet"]
+        nan_inplace_value_columns = ["Limp", "Raise", "Re-raise", "3-Bet", "4-Bet", "5-Bet"]
         nan_inplace_value_columns = [
             f"{play_phase} " + x for x in nan_inplace_value_columns
         ]
