@@ -363,6 +363,11 @@ class PokerStarsCollection(object):
 
         self.all_column_labels = full_column_headings
 
+        self.small_blind = 0.0
+        self.big_blind = 0.0
+        self.small_blind_player = None
+        self.big_blind_player = None
+
         i = 0
         for key, game in self.games_text.items():
             if self.max_games and i >= self.max_games:
@@ -510,15 +515,15 @@ class PokerStarsCollection(object):
 
         button_seat = int(re.search("#\d", player_list[1]).group().strip("#"))
         stakes = []
-        small_blind = 0
-        big_blind = 0
+        self.small_blind = 0
+        self.big_blind = 0
         for line in player_list:
             if line.startswith("PokerStars "):
                 stakes = line.split("(")[1]
                 stakes = stakes.split(")")[0]
                 stakes = stakes.split("/")
-                small_blind = stakes[0].lstrip("$")
-                big_blind = stakes[1].lstrip("$")
+                self.small_blind = stakes[0].lstrip("$")
+                self.big_blind = stakes[1].lstrip("$")
 
             player = re.findall(":.*\(", line)
             if player and "chips" in line:
@@ -533,6 +538,11 @@ class PokerStarsCollection(object):
                 data_dict["Player Name"].append(player_name)
                 data_dict["Seat Number"].append(seat_number)
                 data_dict["Chips ($)"].append(chips)
+
+            if "posts small blind" in line:
+                self.small_blind_player = line.split(":")[0].replace(" ", "")
+            if "posts big blind" in line:
+                self.big_blind_player = line.split(":")[0].replace(" ", "")
 
         # renumber seat numbers for ordering of play
         new_seat_order = [i for i in range(1, len(data_dict["Seat Number"]) + 1)]
@@ -560,8 +570,8 @@ class PokerStarsCollection(object):
         ]
 
         data_df = pd.DataFrame(data_dict).set_index(["Player Name"])
-        data_df["Small Blind"] = float(small_blind)
-        data_df["Big Blind"] = float(big_blind)
+        data_df["Small Blind"] = float(self.small_blind)
+        data_df["Big Blind"] = float(self.big_blind)
 
         return data_df
 
@@ -623,9 +633,18 @@ class PokerStarsCollection(object):
                 elif "calls" in action:
                     call_data = action.split()
                     number_of_calls += 1
+
+                    if play_phase == "Pre-Flop":
+                        if player_name in data:
+                            if "Called " + play_phase + " Raise size" not in data[player_name] \
+                                    and play_phase + " Raise" not in data[player_name]:
+                                if player_name == self.small_blind_player:
+                                    pot += float(self.small_blind)
+                                if player_name == self.big_blind_player:
+                                    pot += float(self.big_blind)
+
                     # if player open limps
                     if number_of_raises == 1 and play_phase == "Pre-Flop":
-                        # TODO: Limping is not yet implemented
 
                         data[player_name][play_phase + " Limp"] = True
 
@@ -649,7 +668,14 @@ class PokerStarsCollection(object):
                     data[player_name]["Check " + play_phase] = True
 
                 elif "folds" in action:
-                    if number_of_raises == 1 and play_phase == "Pre-flop":
+
+                    if play_phase == "Pre-Flop":
+                        if player_name == self.small_blind_player:
+                            pot += float(self.small_blind)
+                        if player_name == self.big_blind_player:
+                            pot += float(self.big_blind)
+
+                    if number_of_raises == 1 and play_phase == "Pre-Flop":
                         data[player_name]["Fold to " + play_phase + " Limp"] = True
                     else:
                         data[player_name]["Fold to " + play_phase + " Raise"] = True
@@ -800,9 +826,7 @@ class PokerStarsCollection(object):
         events_df.reset_index(inplace=True)
         events_df["Position"] = events_df["Seat Number"].map(self.seats)
 
-        events_df["Pre-Flop Final Pot ($)"] = events_df["Small Blind"] + \
-                                              events_df["Big Blind"] + \
-                                              events_df["Pot Increase Pre-Flop"]
+        events_df["Pre-Flop Final Pot ($)"] = events_df["Pot Increase Pre-Flop"]
 
         events_df["Pre-Flop Final Pot (BB)"] = events_df["Pre-Flop Final Pot ($)"] / events_df["Big Blind"]
 
