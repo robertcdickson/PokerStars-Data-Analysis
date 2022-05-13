@@ -616,6 +616,25 @@ class PokerStarsCollection(object):
 
                 action = line.split(":")[1].rstrip()
 
+                if play_phase == "Pre-Flop":
+                    if number_of_raises == 1:
+                        data[player_name][f"Facing {play_phase} Raise"] = False
+                    elif number_of_raises == 2:
+                        data[player_name][f"Facing {play_phase} Raise"] = True
+                    else:
+                        data[player_name][f"Facing {play_phase} Raise"] = True
+                        data[player_name][f"Facing {play_phase} {number_of_raises}-Bet"] = True
+                else:
+                    if number_of_raises == 0:
+                        data[player_name][f"Facing {play_phase} Raise"] = False
+                    elif number_of_raises == 1:
+                        data[player_name][f"Facing {play_phase} Raise"] = True
+                    elif number_of_raises == 2:
+                        data[player_name][f"Facing {play_phase} Re-Raise"] = True
+                    else:
+                        data[player_name][f"Facing {play_phase} Raise"] = True
+                        data[player_name][f"Facing {play_phase} {number_of_raises + 1}-Bet"] = True
+
                 if "bets" in action:
 
                     bet_data = action.split()
