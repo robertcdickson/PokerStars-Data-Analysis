@@ -616,7 +616,7 @@ class PokerStarsCollection(object):
 
                 action = line.split(":")[1].rstrip()
 
-                if play_phase == "Pre-Flop":
+                if play_phase == "Pre-Flop" and f"{play_phase} Raise" not in data[player_name].keys():
                     if number_of_raises == 1:
                         data[player_name][f"Facing {play_phase} Raise"] = False
                     elif number_of_raises == 2:
