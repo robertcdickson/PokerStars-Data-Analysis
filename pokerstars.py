@@ -764,10 +764,20 @@ class PokerStarsCollection(object):
                         if player_name == self.big_blind_player:
                             pot += float(self.big_blind)
 
-                    if number_of_raises == 1 and play_phase == "Pre-Flop":
-                        data[player_name]["Fold to " + play_phase + " Limp"] = True
+                        if number_of_raises == 1:
+                            data[player_name][f"Fold to {play_phase} Limp"] = True
+                        elif number_of_raises == 1:
+                            data[player_name][f"Fold to {play_phase} Raise"] = True
+                        else:
+                            data[player_name][f"Fold to {play_phase} {number_of_raises}-Bet"] = True
+
                     else:
-                        data[player_name]["Fold to " + play_phase + " Raise"] = True
+                        if number_of_raises == 1:
+                            data[player_name][f"Fold to {play_phase} Raise"] = True
+                        elif number_of_raises == 2:
+                            data[player_name][f"Fold to {play_phase} Re-Raise"] = True
+                        else:
+                            data[player_name][f"Fold to {play_phase} {number_of_raises + 1}-Bet"] = True
 
                 elif "raises" in action:
                     number_of_raises += 1
