@@ -208,7 +208,12 @@ full_column_headings = [
     
     "All In",
     "All In Street",
-    "All In Action"
+    "All In Action",
+    "Facing All In Raise",
+    "Call All In Raise",
+    "Fold to All In Raise",
+    "Raise Over All In Raise",
+
     # "Pot Increase Pre-Flop",
     # "Pot Increase Flop",
     # "Pot Increase Turn",

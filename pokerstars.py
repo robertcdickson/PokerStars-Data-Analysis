@@ -639,6 +639,8 @@ class PokerStarsCollection(object):
         data = {}
         pot = 0.0
 
+        all_in_raise = False
+
         # pre-flop there has been a bet due to big blind
         if play_phase == "Pre-Flop":
             number_of_raises = 1
@@ -702,6 +704,9 @@ class PokerStarsCollection(object):
                             f"Facing {play_phase} {number_of_raises + 1}-Bet"
                         ] = True
 
+                if all_in_raise:
+                    data[player_name][f"Facing All In Raise"] = True
+
                 if "bets" in action:
 
                     bet_data = action.split()
@@ -717,6 +722,7 @@ class PokerStarsCollection(object):
                     pot += float(bet_data[1].strip("$"))
 
                     if "all-in" in action:
+                        all_in_raise = True
                         data[player_name]["All In"] = True
                         data[player_name]["All In Street"] = play_phase
                         data[player_name]["All In Action"] = "Raise"
@@ -725,6 +731,8 @@ class PokerStarsCollection(object):
                     call_data = action.split()
                     number_of_calls += 1
 
+                    if all_in_raise:
+                        data[player_name]["Call All In Raise"] = True
                     if play_phase == "Pre-Flop":
                         if player_name in data:
                             if (
@@ -768,6 +776,9 @@ class PokerStarsCollection(object):
 
                 elif "folds" in action:
 
+                    if all_in_raise:
+                        data[player_name]["Fold to All In Raise"] = True
+
                     if play_phase == "Pre-Flop":
                         if player_name == self.small_blind_player:
                             pot += float(self.small_blind)
@@ -792,7 +803,8 @@ class PokerStarsCollection(object):
                 elif "raises" in action:
                     number_of_raises += 1
                     raise_data = action.split()
-                    raise_type = ""
+                    if all_in_raise:
+                        data[player_name][f"Raise Over All In Raise"] = True
                     if number_of_raises < 3:
                         if play_phase == "Pre-Flop":
                             # player has raised (note this may be true for big blind)
@@ -829,6 +841,7 @@ class PokerStarsCollection(object):
 
                     pot += float(raise_data[3].strip("$"))
                     if "all-in" in action:
+                        all_in_raise = True
                         data[player_name]["All In"] = True
                         data[player_name]["All In Street"] = play_phase
                         data[player_name]["All In Action"] = raise_type
