@@ -716,6 +716,11 @@ class PokerStarsCollection(object):
                     )
                     pot += float(bet_data[1].strip("$"))
 
+                    if "all-in" in action:
+                        data[player_name]["All In"] = True
+                        data[player_name]["All In Street"] = play_phase
+                        data[player_name]["All In Action"] = "Raise"
+
                 elif "calls" in action:
                     call_data = action.split()
                     number_of_calls += 1
@@ -753,6 +758,11 @@ class PokerStarsCollection(object):
                             ] = call_data[1].strip("$")
                     pot += float(call_data[1].strip("$"))
 
+                    if "all-in" in action:
+                        data[player_name]["All In"] = True
+                        data[player_name]["All In Street"] = play_phase
+                        data[player_name]["All In Action"] = "Call"
+
                 elif "checks" in action:
                     data[player_name]["Check " + play_phase] = True
 
@@ -782,9 +792,11 @@ class PokerStarsCollection(object):
                 elif "raises" in action:
                     number_of_raises += 1
                     raise_data = action.split()
+                    raise_type = ""
                     if number_of_raises < 3:
                         if play_phase == "Pre-Flop":
                             # player has raised (note this may be true for big blind)
+                            raise_type = "Raise"
                             data[player_name][play_phase + " Raise"] = True
                             data[player_name][play_phase + " Raise Size"] = raise_data[
                                 1
@@ -793,6 +805,7 @@ class PokerStarsCollection(object):
                                 3
                             ].strip("$")
                         else:
+                            raise_type = "Re-Raise"
                             # player has raised (note this may be true for big blind)
                             data[player_name][play_phase + " Re-raise"] = True
                             data[player_name][
@@ -803,6 +816,7 @@ class PokerStarsCollection(object):
                             ].strip("$")
                     else:
                         # player has raised (note this may be true for big blind)
+                        raise_type = f"{number_of_raises}-Bet"
                         data[player_name][
                             play_phase + f" {number_of_raises}-Bet"
                         ] = True
@@ -814,6 +828,10 @@ class PokerStarsCollection(object):
                         ] = raise_data[3].strip("$")
 
                     pot += float(raise_data[3].strip("$"))
+                    if "all-in" in action:
+                        data[player_name]["All In"] = True
+                        data[player_name]["All In Street"] = play_phase
+                        data[player_name]["All In Action"] = raise_type
 
         normalised_dict = dict([(k, pd.Series(v)) for k, v in data.items()])
         df = pd.DataFrame(normalised_dict).transpose()

@@ -203,9 +203,12 @@ full_column_headings = [
     "Called River 6-Bet",
     "Called River 6-Bet Size",
     "Fold to River 6-Bet",
-    "River Final Pot ($)"
-    "River Final Pot (BB)"
-
+    "River Final Pot ($)",
+    "River Final Pot (BB)",
+    
+    "All In",
+    "All In Street",
+    "All In Action"
     # "Pot Increase Pre-Flop",
     # "Pot Increase Flop",
     # "Pot Increase Turn",
