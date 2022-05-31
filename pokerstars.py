@@ -439,7 +439,6 @@ class PokerStarsCollection(object):
         self.full_data = pd.concat(
             [x.get_full_data() for x in self.games_data.values()]
         )
-        print(self.full_data)
         self.full_data = self.full_data.reset_index(drop=True)
         self.full_data = self.reorder_columns()
 
@@ -676,6 +675,9 @@ class PokerStarsCollection(object):
                 if player_name not in data.keys():
                     data[player_name] = {}
 
+                if f"{play_phase} Added to Pot" not in data[player_name].keys():
+                    data[player_name][f"{play_phase} Added to Pot"] = 0.0
+
                 action = line.split(":")[1].rstrip()
 
                 if (
@@ -720,6 +722,7 @@ class PokerStarsCollection(object):
                         "$"
                     )
                     pot += float(bet_data[1].strip("$"))
+                    data[player_name][f"{play_phase} Added to Pot"] += float(bet_data[1].strip("$"))
 
                     if "all-in" in action:
                         all_in_raise = True
@@ -741,14 +744,16 @@ class PokerStarsCollection(object):
                                 and play_phase + " Raise" not in data[player_name]
                             ):
                                 if player_name == self.small_blind_player:
+                                    data[player_name][f"{play_phase} Added to Pot"] = float(self.small_blind)
                                     pot += float(self.small_blind)
                                 if player_name == self.big_blind_player:
+                                    data[player_name][f"{play_phase} Added to Pot"] = float(self.big_blind)
                                     pot += float(self.big_blind)
 
                     # if player open limps
                     if number_of_raises == 1 and play_phase == "Pre-Flop":
-
                         data[player_name][play_phase + " Limp"] = True
+                        pot += float(self.big_blind)
 
                     # else calling a bet
                     else:
@@ -765,6 +770,7 @@ class PokerStarsCollection(object):
                                 "Called " + play_phase + f" {number_of_raises}-Bet Size"
                             ] = call_data[1].strip("$")
                     pot += float(call_data[1].strip("$"))
+                    data[player_name][f"{play_phase} Added to Pot"] += float(call_data[1].strip("$"))
 
                     if "all-in" in action:
                         data[player_name]["All In"] = True
@@ -840,6 +846,8 @@ class PokerStarsCollection(object):
                         ] = raise_data[3].strip("$")
 
                     pot += float(raise_data[3].strip("$"))
+                    data[player_name][f"{play_phase} Added to Pot"] += float(raise_data[3].strip("$"))
+
                     if "all-in" in action:
                         all_in_raise = True
                         data[player_name]["All In"] = True
@@ -969,6 +977,8 @@ class PokerStarsCollection(object):
             events_df["Pre-Flop Final Pot ($)"] / events_df["Big Blind"]
         )
 
+        events_df["Total Added to Pot"] = events_df["Pre-Flop Added to Pot"]
+
         if "Flop" in data_dict.keys():
             events_df["Flop Final Pot ($)"] = (
                 events_df["Pot Increase Flop"] + events_df["Pre-Flop Final Pot ($)"]
@@ -976,6 +986,8 @@ class PokerStarsCollection(object):
             events_df["Flop Final Pot (BB)"] = (
                 events_df["Flop Final Pot ($)"] / events_df["Big Blind"]
             )
+            events_df["Total Added to Pot"] += events_df["Flop Added to Pot"]
+
         if "Turn" in data_dict.keys():
             events_df["Turn Final Pot ($)"] = (
                 events_df["Pot Increase Turn"] + events_df["Flop Final Pot ($)"]
@@ -983,6 +995,8 @@ class PokerStarsCollection(object):
             events_df["Turn Final Pot (BB)"] = (
                 events_df["Turn Final Pot ($)"] / events_df["Big Blind"]
             )
+            events_df["Total Added to Pot"] += events_df["Turn Added to Pot"]
+
         if "River" in data_dict.keys():
             events_df["River Final Pot ($)"] = (
                 events_df["Pot Increase River"] + events_df["Turn Final Pot ($)"]
@@ -990,8 +1004,9 @@ class PokerStarsCollection(object):
             events_df["River Final Pot (BB)"] = (
                 events_df["River Final Pot ($)"] / events_df["Big Blind"]
             )
+            events_df["Total Added to Pot"] += events_df["River Added to Pot"]
 
-        # these columns seem a bit useless so adding this as a temporary
+        # these columns seem a bit useless so adding this as a temporary fix
         events_df = events_df.drop(
             [
                 "index",

@@ -64,6 +64,7 @@ full_column_headings = [
     "Fold to Pre-Flop 6-Bet",
     "Pre-Flop Final Pot ($)",
     "Pre-Flop Final Pot (BB)",
+    "Pre-Flop Added to Pot",
 
     # flop
     "Check Flop",
@@ -111,6 +112,7 @@ full_column_headings = [
     "Fold to Flop 6-Bet",
     "Flop Final Pot ($)",
     "Flop Final Pot (BB)",
+    "Flop Added to Pot",
 
     # Turn
     "Check Turn",
@@ -158,6 +160,7 @@ full_column_headings = [
     "Fold to Turn 6-Bet",
     "Turn Final Pot ($)",
     "Turn Final Pot (BB)",
+    "Turn Added to Pot",
 
     # River
     "Check River",
@@ -205,6 +208,7 @@ full_column_headings = [
     "Fold to River 6-Bet",
     "River Final Pot ($)",
     "River Final Pot (BB)",
+    "River Added to Pot",
     
     "All In",
     "All In Street",
@@ -213,6 +217,8 @@ full_column_headings = [
     "Call All In Raise",
     "Fold to All In Raise",
     "Raise Over All In Raise",
+
+    "Total Added to Pot",
 
     # "Pot Increase Pre-Flop",
     # "Pot Increase Flop",
