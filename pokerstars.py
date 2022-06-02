@@ -4,6 +4,7 @@ import random
 import re
 import sys
 
+import numpy as np
 import pandas as pd
 from collections import Counter
 from src.poker_main import *
@@ -631,6 +632,14 @@ class PokerStarsCollection(object):
         data_df = pd.DataFrame(data_dict).set_index(["Player Name"])
         data_df["Small Blind"] = float(self.small_blind)
         data_df["Big Blind"] = float(self.big_blind)
+
+        conditions = [(data_df["Is Small Blind"] == True),
+                      (data_df["Is Big Blind"] == True),
+                      (data_df["Is Small Blind"] == False) & (data_df["Is Big Blind"] == False)]
+        values = [float(self.small_blind),
+                  float(self.big_blind),
+                  0.0]
+        data_df["Added to Pot Pre-Deal"] = np.select(conditions, values)
 
         return data_df
 
