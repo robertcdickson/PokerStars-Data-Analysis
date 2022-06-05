@@ -207,7 +207,9 @@ class PokerStarsGame(object):
             translated_hand (list):
                 List of tuples of different cards
         """
-        translated_hand = [(int(self.values[card[0]]), self.suits[card[1]]) for card in hand]
+        translated_hand = [
+            (int(self.values[card[0]]), self.suits[card[1]]) for card in hand
+        ]
         return translated_hand
 
     def get_player_cards(self):
@@ -633,12 +635,12 @@ class PokerStarsCollection(object):
         data_df["Small Blind"] = float(self.small_blind)
         data_df["Big Blind"] = float(self.big_blind)
 
-        conditions = [(data_df["Is Small Blind"] == True),
-                      (data_df["Is Big Blind"] == True),
-                      (data_df["Is Small Blind"] == False) & (data_df["Is Big Blind"] == False)]
-        values = [float(self.small_blind),
-                  float(self.big_blind),
-                  0.0]
+        conditions = [
+            (data_df["Is Small Blind"] == True),
+            (data_df["Is Big Blind"] == True),
+            (data_df["Is Small Blind"] == False) & (data_df["Is Big Blind"] == False),
+        ]
+        values = [float(self.small_blind), float(self.big_blind), 0.0]
         data_df["Added to Pot Pre-Deal"] = np.select(conditions, values)
 
         return data_df
@@ -731,7 +733,9 @@ class PokerStarsCollection(object):
                         "$"
                     )
                     pot += float(bet_data[1].strip("$"))
-                    data[player_name][f"{play_phase} Added to Pot"] += float(bet_data[1].strip("$"))
+                    data[player_name][f"{play_phase} Added to Pot"] += float(
+                        bet_data[1].strip("$")
+                    )
 
                     if "all-in" in action:
                         all_in_raise = True
@@ -753,10 +757,14 @@ class PokerStarsCollection(object):
                                 and play_phase + " Raise" not in data[player_name]
                             ):
                                 if player_name == self.small_blind_player:
-                                    data[player_name][f"{play_phase} Added to Pot"] = float(self.small_blind)
+                                    data[player_name][
+                                        f"{play_phase} Added to Pot"
+                                    ] = float(self.small_blind)
                                     pot += float(self.small_blind)
                                 if player_name == self.big_blind_player:
-                                    data[player_name][f"{play_phase} Added to Pot"] = float(self.big_blind)
+                                    data[player_name][
+                                        f"{play_phase} Added to Pot"
+                                    ] = float(self.big_blind)
                                     pot += float(self.big_blind)
 
                     # if player open limps
@@ -779,7 +787,9 @@ class PokerStarsCollection(object):
                                 "Called " + play_phase + f" {number_of_raises}-Bet Size"
                             ] = call_data[1].strip("$")
                     pot += float(call_data[1].strip("$"))
-                    data[player_name][f"{play_phase} Added to Pot"] += float(call_data[1].strip("$"))
+                    data[player_name][f"{play_phase} Added to Pot"] += float(
+                        call_data[1].strip("$")
+                    )
 
                     if "all-in" in action:
                         data[player_name]["All In"] = True
@@ -805,7 +815,9 @@ class PokerStarsCollection(object):
                         elif number_of_raises == 1:
                             data[player_name][f"Fold to {play_phase} Raise"] = True
                         else:
-                            data[player_name][f"Fold to {play_phase} {number_of_raises}-Bet"] = True
+                            data[player_name][
+                                f"Fold to {play_phase} {number_of_raises}-Bet"
+                            ] = True
 
                     else:
                         if number_of_raises == 1:
@@ -813,7 +825,9 @@ class PokerStarsCollection(object):
                         elif number_of_raises == 2:
                             data[player_name][f"Fold to {play_phase} Re-Raise"] = True
                         else:
-                            data[player_name][f"Fold to {play_phase} {number_of_raises + 1}-Bet"] = True
+                            data[player_name][
+                                f"Fold to {play_phase} {number_of_raises + 1}-Bet"
+                            ] = True
 
                 elif "raises" in action:
                     number_of_raises += 1
@@ -855,7 +869,9 @@ class PokerStarsCollection(object):
                         ] = raise_data[3].strip("$")
 
                     pot += float(raise_data[3].strip("$"))
-                    data[player_name][f"{play_phase} Added to Pot"] += float(raise_data[3].strip("$"))
+                    data[player_name][f"{play_phase} Added to Pot"] += float(
+                        raise_data[3].strip("$")
+                    )
 
                     if "all-in" in action:
                         all_in_raise = True
@@ -894,6 +910,23 @@ class PokerStarsCollection(object):
         }.get(operator, None)
 
     def read_summary(self, lines_list):
+        """
+        A function that gets the summary information for a PokerStars game
+
+        Args:
+            lines_list (list):
+                list of lines in the summary
+
+        Returns:
+            dataframe:
+                DataFrame with players cards
+            winners (list):
+                list of winners
+            winning_hands (list):
+                list of winning hands
+            winning_ranking (list):
+                list of classification of winning hands
+        """
         data = {}
         winners = []
         winning_hands = []
@@ -935,16 +968,18 @@ class PokerStarsCollection(object):
                 return [Card(x) for x in list_of_cards]
         return None
 
-    def read_pokerstars_file(self, lines, game_index=0):
+    def read_pokerstars_file(self, lines: list, game_index=0):
         """
         A function that processes a pokerstars game and returns a dataframe with a summary of all events in game
 
         Args:
-            lines:
-            file (str): file to read
+            lines (list):
+                list of lines in a single PokerStars game
+            game_index (int):
+                index of game used to identify individual games in a collection
 
         Returns:
-            events df (pandas df)
+
         """
         total_pot = 0
 
@@ -975,6 +1010,11 @@ class PokerStarsCollection(object):
             winning_ranking,
         ) = self.read_summary(game_text["SUMMARY"])
 
+        # get player card and table data
+        data_dict["card_information"] = self.get_card_information(
+            data_dict["summary"], table_cards
+        )
+
         events_df = pd.concat([val for val in data_dict.values()], axis=1)
         events_df["Player Name"] = list(events_df.index)
         events_df.reset_index(inplace=True)
@@ -995,7 +1035,8 @@ class PokerStarsCollection(object):
             events_df["Flop Final Pot (BB)"] = (
                 events_df["Flop Final Pot ($)"] / events_df["Big Blind"]
             )
-            events_df["Total Added to Pot"] += events_df["Flop Added to Pot"]
+            if not data_dict["Flop"].empty:
+                events_df["Total Added to Pot"] += events_df["Flop Added to Pot"]
 
         if "Turn" in data_dict.keys():
             events_df["Turn Final Pot ($)"] = (
@@ -1004,7 +1045,8 @@ class PokerStarsCollection(object):
             events_df["Turn Final Pot (BB)"] = (
                 events_df["Turn Final Pot ($)"] / events_df["Big Blind"]
             )
-            events_df["Total Added to Pot"] += events_df["Turn Added to Pot"]
+            if not data_dict["Turn"].empty:
+                events_df["Total Added to Pot"] += events_df["Turn Added to Pot"]
 
         if "River" in data_dict.keys():
             events_df["River Final Pot ($)"] = (
@@ -1013,7 +1055,8 @@ class PokerStarsCollection(object):
             events_df["River Final Pot (BB)"] = (
                 events_df["River Final Pot ($)"] / events_df["Big Blind"]
             )
-            events_df["Total Added to Pot"] += events_df["River Added to Pot"]
+            if not data_dict["River"].empty:
+                events_df["Total Added to Pot"] += events_df["River Added to Pot"]
 
         # these columns seem a bit useless so adding this as a temporary fix
         events_df = events_df.drop(
@@ -1037,6 +1080,23 @@ class PokerStarsCollection(object):
             game_index=game_index,
         )
         return game
+
+    def get_card_information(self, player_cards: pd.Series, table_cards: list):
+        """
+        A function that, given a series of players cards and the community table cards, will return a dataframe of all
+        the relevant  draws, rankings and combos
+
+        Args:
+            player_cards (Series):
+                DataFrame of cards each player has. A player is ignored if hand not specified
+            table_cards (list):
+                List of community table cards
+
+        Returns:
+            card_information_data (DataFrame):
+                DataFrame of all relevant card ranking information
+
+        """
 
     def winning_games(self, winner=None):
         """
