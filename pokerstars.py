@@ -1,42 +1,36 @@
 import copy
-import itertools
-import random
 import re
-import sys
 
 import numpy as np
 import pandas as pd
-from collections import Counter
+from typing import List
+
 from src.poker_main import *
-import pyarrow
 from data_catagories import full_column_headings
-
-
-# TODO: make Player data profile class
 
 
 class PokerStarsGame(object):
     """
-    An object containing all datat related to a game player on Pokerstars.
+    An object containing all data related to a Pokerstars game.
     """
 
     def __init__(
             self,
-            game_text,
-            data,
-            table_cards,
-            winners,
-            winning_hands=None,
-            winning_ranking=None,
-            hero="bobsondugnutt11",
-            game_index=0,
-            hero_cards=None,
+            game_text: List,
+            data: pd.DataFrame,
+            table_cards: List[Card],
+            winners: List,
+            winning_hands: List = None,
+            winning_ranking: str = None,
+            hero: str = "bobsondugnutt11",
+            game_index: int = 0,
+            hero_cards: list = None,
     ):
         """
 
         Args:
-            game_text: (str)
-                The whole text read out from the pokerstars output file
+            game_text (list):
+                List containing each of a PokerStars game
             data (Dataframe):
                 A dataframe with different attributes of the game
             table_cards (list):
@@ -74,8 +68,9 @@ class PokerStarsGame(object):
         }
 
         self.deck = [Card(value + suit) for suit in self.suits for value in self.values]
+
         if data is None:
-            self.data = self.get_data_from_text()
+            self.data = None  # self.get_data_from_text()
 
         self.data = data
         self.game_index = game_index
@@ -165,7 +160,7 @@ class PokerStarsGame(object):
             "Winning Rankings": str(self.winning_rankings),
         }
 
-    def reorder_columns(self, df):
+    def reorder_columns(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Reorders columns according to data_categories.py file
         Args:
@@ -179,7 +174,7 @@ class PokerStarsGame(object):
         new_column_labels = [x for x in self.all_column_labels if x in df.columns]
         return df[new_column_labels]
 
-    def get_blind(self, size: str):
+    def get_blind(self, size: str) -> list:
         """
         Function to get big or small blind
 
@@ -195,7 +190,7 @@ class PokerStarsGame(object):
         blind = self.data.index[self.data["Position"] == size].to_list()
         return blind
 
-    def translate_hand(self, hand):
+    def translate_hand(self, hand: List[str]) -> List[tuple]:
         """
         Translates hand from pokerstars output format to list of tuples
 
@@ -212,13 +207,13 @@ class PokerStarsGame(object):
         ]
         return translated_hand
 
-    def get_player_cards(self):
+    def get_player_cards(self) -> List[Card]:
         """
         Function to get the hero players hand
 
         Returns:
             new_cards (list):
-                List of Card objects of hero
+                List of Card objects in Hero's hand
 
         """
         for line in self.game_text:
@@ -227,7 +222,7 @@ class PokerStarsGame(object):
                 new_cards = [Card(x) for x in cards]
                 return new_cards
 
-    def get_final_pot(self):
+    def get_final_pot(self) -> float:
         """
         Gets the final pot value
 
@@ -243,8 +238,9 @@ class PokerStarsGame(object):
     def get_data_from_text(self):
         pass
 
-    def get_full_data(self):
+    def get_full_data(self) -> pd.DataFrame:
         """
+        Gets the full DataFrame for a game
 
         Returns:
             new_df (DataFrame):
@@ -258,10 +254,10 @@ class PokerStarsGame(object):
 
     def simulate_game(
             self, players=None, n=100, use_table_cards=True, table_card_length=5
-    ):
+    ) -> (dict, dict, dict):
         """
-        A function that runs a simulation for n poker_session to see how likely a hero is to win pre flop against
-        other hands
+        A function that runs a simulation for n games to see how likely a hero is to win against other hands
+
         Args:
             players (list):
                 List of players involved in hand
@@ -367,13 +363,30 @@ class PokerStarsGame(object):
 class PokerStarsCollection(object):
     def __init__(
             self,
-            file,
-            working_dir,
-            encoding="ISO-8859-14",
-            hero="Bobson_Dugnutt",
-            write_files=False,
-            max_games=None,
+            file: str,
+            working_dir: str,
+            encoding: str = "ISO-8859-14",
+            hero: str = "Bobson_Dugnutt",
+            write_files: bool = False,
+            max_games: str = None,
     ):
+        """
+        A collection of many PokerStarsGame objects
+
+        Args:
+            file (str):
+                File to read in
+            working_dir (str):
+                Current working directory where script is run
+            encoding (str):
+                Character encoding. As files are typically saved on a Windows system, the default is "ISO-8859-14"
+            hero (str):
+                The PokerStars username of the player
+            write_files (bool):
+                Determines if individual game files are to be written when data file is split. Default: False
+            max_games (int):
+                Max number of games to be processed.
+        """
 
         self.suits = {"c": "clubs", "s": "spades", "d": "diamonds", "h": "hearts"}
 
@@ -445,7 +458,18 @@ class PokerStarsCollection(object):
         self.full_data = self.full_data.reset_index(drop=True)
         self.full_data = self.reorder_columns()
 
-    def process_file(self, split_files=False):
+    def process_file(self,
+                     split_files: bool = False):
+        """
+
+        Args:
+            split_files (bool):
+                Determines if file is to be split into individual files
+        Returns:
+            files_dict (dict):
+                Dict of all games in data file
+
+        """
 
         # a function that chunks a file of poker stars hands into individual poker_session
         files_dict = {}
@@ -491,7 +515,7 @@ class PokerStarsCollection(object):
         return files_dict
 
     @staticmethod
-    def read_hand(hand, hand_regex):
+    def read_hand(hand: list, hand_regex: re.Pattern):
         # reads in a hand given a hand regex
         return hand_regex.findall(hand)[0].strip("[]").split()
 
