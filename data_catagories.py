@@ -273,6 +273,9 @@ full_column_headings = [
 
     "Total Added to Pot",
 
+    "Pocket Pair",
+    "Suited Hand",
+
     # "Pot Increase Pre-Flop",
     # "Pot Increase Flop",
     # "Pot Increase Turn",

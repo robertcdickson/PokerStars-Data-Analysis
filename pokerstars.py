@@ -371,7 +371,7 @@ class PokerStarsCollection(object):
             max_games: str = None,
     ):
         """
-        A collection of many PokerStarsGame objects
+        A collection of PokerStarsGame objects
 
         Args:
             file (str):
@@ -414,10 +414,12 @@ class PokerStarsCollection(object):
             5: "HJ",
             6: "CO",
         }
+
         self.file = file
         self.working_dir = working_dir
         self.hero = hero
         self.hero_cards = None
+
         self.search_dict = {
             "Pre-Flop": "HOLE CARDS",
             "Flop": "FLOP",
@@ -457,6 +459,7 @@ class PokerStarsCollection(object):
         )
         self.full_data = self.full_data.reset_index(drop=True)
         self.full_data = self.reorder_columns()
+        self.positions = None
 
     def process_file(self,
                      split_files: bool = False):
@@ -485,6 +488,8 @@ class PokerStarsCollection(object):
             write = False
 
             for line in rf.readlines():
+
+                # at present can only look at hands from cash games
                 if (
                         "PokerStarsCollection Hand" in line
                         or "PokerStars Zoom Hand" in line
@@ -511,6 +516,7 @@ class PokerStarsCollection(object):
                         if split_files:
                             wf.close()
                         file_number += 1
+
         print("Finished file splitting into individual games")
         return files_dict
 
@@ -610,13 +616,16 @@ class PokerStarsCollection(object):
                 self.big_blind = stakes[1].lstrip("$")
 
             player = re.findall(":.*\(", line)
+
             if player and "chips" in line:
+
                 # get hero name and number of chips
                 line_list = line.split(" ")
 
                 # get different pieces of data pre dealing
                 seat_number = int(line_list[1].strip(":"))
-                player_name = re.sub("[:\( ]", "", player[0])
+                player_name = player[0][2:-2]
+                print(f"pre-deal {player_name}")
                 chips = float(
                     line_list[-4].strip("($")
                 )  # TODO: THIS MAY BE A PROBLEM TEST
@@ -685,7 +694,6 @@ class PokerStarsCollection(object):
             number_of_calls = 0
 
         cards = None
-
         for line in lines_list:
 
             # Dealt should only be shown for hero!
@@ -706,7 +714,7 @@ class PokerStarsCollection(object):
             elif (
                     ":" in line
             ):  # I think having this filters out players joining table, disconnecting etc. for speed up
-                player_name = line.split(":")[0].replace(" ", "")
+                player_name = line.split(":")[0]
 
                 if player_name not in data.keys():
                     data[player_name] = {}
@@ -812,6 +820,7 @@ class PokerStarsCollection(object):
                                 "Called " + play_phase + f" {number_of_raises}-Bet Size"
                                 ] = call_data[1].strip("$")
                     pot += float(call_data[1].strip("$"))
+
                     data[player_name][f"{play_phase} Added to Pot"] += float(
                         call_data[1].strip("$")
                     )
@@ -857,11 +866,14 @@ class PokerStarsCollection(object):
                 elif "raises" in action:
                     number_of_raises += 1
                     raise_data = action.split()
+
                     if all_in_raise:
                         data[player_name][f"Raise Over All In Raise"] = True
 
                     if number_of_raises < 3:
+
                         if play_phase == "Pre-Flop":
+
                             # player has raised (note this may be true for big blind)
                             raise_type = "Raise"
                             data[player_name][play_phase + " Raise"] = True
@@ -873,6 +885,9 @@ class PokerStarsCollection(object):
                             ].strip("$")
 
                             # get player position
+                            print("==========")
+                            print(self.positions)
+                            print("==========")
                             general_data[f"{play_phase} Raise Position"] = self.positions[player_name]
                         else:
                             raise_type = "Re-Raise"
@@ -977,6 +992,7 @@ class PokerStarsCollection(object):
                 a = re.sub("\(.*\)", "", line.split("showed")[0])
                 b = re.sub("Seat [0-9]: ", "", a).strip()
                 data[b] = re.findall("\[.+]", line)[0].strip("[]")
+
                 if "won" in line:
                     if "showed" in line:
                         winning_hands.append(data[b])
@@ -995,7 +1011,7 @@ class PokerStarsCollection(object):
             data[self.hero] = str(self.hero_cards)
 
         return (
-            pd.DataFrame(data.values(), index=data.keys(), columns=["Player Cards"]),
+            pd.Series(list(data.values()), index=list(data.keys()), dtype="string"),
             winners,
             winning_hands,
             winning_ranking,
@@ -1029,7 +1045,6 @@ class PokerStarsCollection(object):
 
         # process file
         game_text = self.split_game_to_events(file=None, lines=lines)
-
         # get table cards
         table_cards = self.get_final_table_cards(game_text["SUMMARY"], lines)
 
@@ -1056,6 +1071,7 @@ class PokerStarsCollection(object):
             data_dict["summary"], table_cards
         )
 
+        # collect data
         events_df = pd.concat([val for val in data_dict.values()], axis=1)
         events_df["Player Name"] = list(events_df.index)
         events_df.reset_index(inplace=True)
@@ -1138,9 +1154,21 @@ class PokerStarsCollection(object):
                 DataFrame of all relevant card ranking information
 
         """
+        data = {x: {} for x in player_cards.index}
 
-        for hand in player_cards:
-            translated_hand = []
+        for player, hand in player_cards.items():
+            if hand[0] == hand[3]:
+                data[player]["Pocket Pair"] = True
+            else:
+                data[player]["Pocket Pair"] = False
+
+            if hand[1] == hand[4]:
+                data[player]["Suited Hand"] = True
+            else:
+                data[player]["Suited Hand"] = False
+
+        df = pd.DataFrame(data).transpose()
+        return df
 
     def winning_games(self, winner=None):
         """
