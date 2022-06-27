@@ -82,7 +82,7 @@ full_column_headings = [
     "Pre-Flop Final Pot (BB)",
     "Pre-Flop Added to Pot",
 
-    # flop
+    # Flop
     "Check Flop",
 
     "Facing Flop Raise",
@@ -263,7 +263,8 @@ full_column_headings = [
     "River Final Pot ($)",
     "River Final Pot (BB)",
     "River Added to Pot",
-    
+
+    # All In
     "All In",
     "All In Street",
     "All In Action",
@@ -274,6 +275,7 @@ full_column_headings = [
 
     "Total Added to Pot",
 
+    # Hand Rankings
     "Pocket Pair",
     "Suited Hand",
 

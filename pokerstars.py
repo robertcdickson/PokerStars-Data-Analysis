@@ -250,6 +250,8 @@ class PokerStarsGame(object):
         new_df = self.data
         for key, value in self.values_for_full_data.items():
             new_df[key] = value
+
+            # reorders columns based on formatting in data_categories.py
         self.reorder_columns(new_df)
         return new_df
 
@@ -963,6 +965,7 @@ class PokerStarsCollection(object):
 
         return df
 
+    @staticmethod
     def operations(self, operator, line):
         return {
             "showed": re.findall("\[.*\]", line)[0],

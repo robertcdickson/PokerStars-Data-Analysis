@@ -1,3 +1,5 @@
+import itertools
+
 
 class SingleBoardAnalysis(object):
     def __init__(self, player_cards=None, table_cards=None, street=None):
