@@ -7,6 +7,7 @@ from typing import List
 
 from src.poker_main import *
 from data_catagories import full_column_headings
+from board_analysis import SingleBoardAnalysis
 
 
 class PokerStarsGame(object):
@@ -461,8 +462,7 @@ class PokerStarsCollection(object):
         self.full_data = self.reorder_columns()
         self.positions = None
 
-    def process_file(self,
-                     split_files: bool = False):
+    def process_file(self, split_files: bool = False):
         """
 
         Args:
@@ -618,14 +618,12 @@ class PokerStarsCollection(object):
             player = re.findall(":.*\(", line)
 
             if player and "chips" in line:
-
                 # get hero name and number of chips
                 line_list = line.split(" ")
 
                 # get different pieces of data pre dealing
                 seat_number = int(line_list[1].strip(":"))
                 player_name = player[0][2:-2]
-                print(f"pre-deal {player_name}")
                 chips = float(
                     line_list[-4].strip("($")
                 )  # TODO: THIS MAY BE A PROBLEM TEST
@@ -885,10 +883,9 @@ class PokerStarsCollection(object):
                             ].strip("$")
 
                             # get player position
-                            print("==========")
-                            print(self.positions)
-                            print("==========")
-                            general_data[f"{play_phase} Raise Position"] = self.positions[player_name]
+                            general_data[
+                                f"{play_phase} Raise Position"
+                            ] = self.positions[player_name]
                         else:
                             raise_type = "Re-Raise"
                             # player has raised (note this may be true for big blind)
@@ -899,10 +896,14 @@ class PokerStarsCollection(object):
                             data[player_name][play_phase + " Re-raise to"] = raise_data[
                                 3
                             ].strip("$")
-                            data[player_name][f"{play_phase} Re-Raise Position"] = self.positions[player_name]
+                            data[player_name][
+                                f"{play_phase} Re-Raise Position"
+                            ] = self.positions[player_name]
 
                             # get player position
-                            general_data[f"{play_phase} Re-Raise Position"] = self.positions[player_name]
+                            general_data[
+                                f"{play_phase} Re-Raise Position"
+                            ] = self.positions[player_name]
 
                     else:
                         # player has raised (note this may be true for big blind)
@@ -918,7 +919,9 @@ class PokerStarsCollection(object):
                             ] = raise_data[3].strip("$")
 
                         # get player position
-                        general_data[f"{play_phase} {number_of_raises}-Bet Position"] = self.positions[player_name]
+                        general_data[
+                            f"{play_phase} {number_of_raises}-Bet Position"
+                        ] = self.positions[player_name]
 
                     pot += float(raise_data[3].strip("$"))
                     data[player_name][f"{play_phase} Added to Pot"] += float(
@@ -1138,7 +1141,8 @@ class PokerStarsCollection(object):
         )
         return game
 
-    def get_card_information(self, player_cards: pd.Series, table_cards: list):
+    @staticmethod
+    def get_card_information(player_cards: pd.Series, table_cards: list):
         """
         A function that, given a series of players cards and the community table cards, will return a dataframe of all
         the relevant  draws, rankings and combos
@@ -1157,6 +1161,7 @@ class PokerStarsCollection(object):
         data = {x: {} for x in player_cards.index}
 
         for player, hand in player_cards.items():
+            new_hand = [Card(hand[0:2]), Card(hand[3:5])]
             if hand[0] == hand[3]:
                 data[player]["Pocket Pair"] = True
             else:
@@ -1166,6 +1171,10 @@ class PokerStarsCollection(object):
                 data[player]["Suited Hand"] = True
             else:
                 data[player]["Suited Hand"] = False
+
+            cards = table_cards
+            player_data = SingleBoardAnalysis(new_hand, table_cards).data_analysis
+            data[player].update(player_data)
 
         df = pd.DataFrame(data).transpose()
         return df

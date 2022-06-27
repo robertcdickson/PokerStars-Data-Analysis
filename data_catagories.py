@@ -1,6 +1,7 @@
 full_column_headings = [
 
     # General Data
+    "Has Straight",
     "Player Name",
     "Stakes",
     "Small Blind",
