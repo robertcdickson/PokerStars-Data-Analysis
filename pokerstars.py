@@ -466,14 +466,16 @@ class PokerStarsCollection(object):
         for game in self.games_data.values():
             data = game.get_full_data()
             for key in data.keys():
+                if key == "summary" or key == "Showdown":
+                    continue
                 if key not in self.full_data.keys():
                     self.full_data[key] = []
                 self.full_data[key].append(data[key])
-
         for key in self.full_data:
+
             self.full_data[key] = pd.concat(self.full_data[key])
             self.full_data[key] = self.full_data[key].reset_index(drop=True)
-            # self.full_data[key] = self.reorder_columns()
+            self.full_data[key] = self.reorder_columns(self.full_data[key])
 
         self.positions = None
 
@@ -540,14 +542,14 @@ class PokerStarsCollection(object):
         # reads in a hand given a hand regex
         return hand_regex.findall(hand)[0].strip("[]").split()
 
-    def reorder_columns(self):
-        for key in self.full_data.keys():
-            new_column_labels = [
-                x for x in self.all_column_labels if x in self.full_data[key].columns.to_list()
-            ]
-            self.full_data[key] = self.full_data[key][new_column_labels]
+    def reorder_columns(self, df):
 
-        return self.full_data
+        new_column_labels = [
+            x for x in self.all_column_labels if x in df.columns.to_list()
+        ]
+        df = df[new_column_labels]
+
+        return df
 
     def translate_hand(self, hand):
         # translates hand from pokerstars output format to list of tuples
