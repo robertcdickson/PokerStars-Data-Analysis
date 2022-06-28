@@ -109,8 +109,8 @@ class PokerStarsGame(object):
 
         self.big_blind = self.get_blind("BB")
         self.small_blind = self.get_blind("SB")
-        self.chip_leader = self.data.index[
-            self.data["Chips ($)"] == self.data["Chips ($)"].max()
+        self.chip_leader = self.data["General"].index[
+            self.data["General"]["Chips ($)"] == self.data["General"]["Chips ($)"].max()
             ].to_list()
 
         self.player_cards_text = self.get_player_cards()
@@ -127,7 +127,7 @@ class PokerStarsGame(object):
             self.game_code = self.game_text[0].split("#")[1].split(":")[0]
             self.stakes = self.game_text[0].split("(")[1].split(")")[0]
             self.big_blind_size = float(self.stakes.split("/")[1].strip("$"))
-            self.data["Chips (BB)"] = self.data["Chips ($)"] / self.big_blind_size
+            self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self.big_blind_size
             self.date = self.game_text[0].split("-")[1].split("[")[0].split(" ")[1]
             self.time = self.game_text[0].split("-")[1].split("[")[0].split(" ")[2]
             self.max_players = self.game_text[1].split("'")[2].split(" ")[1]
@@ -137,7 +137,7 @@ class PokerStarsGame(object):
             self.game_code = self.game_text[0].split("#")[1].split(":")[0]
             self.stakes = self.game_text[0].split("(")[1].split(")")[0].split(" ")[0]
             self.big_blind_size = float(self.stakes.split("/")[1].strip("$").split()[0])
-            self.data["Chips (BB)"] = self.data["Chips ($)"] / self.big_blind_size
+            self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self.big_blind_size
             self.date = self.game_text[0].split("-")[1].split("[")[0].split(" ")[1]
             self.time = self.game_text[0].split("-")[1].split("[")[0].split(" ")[2]
             self.max_players = self.game_text[1].split("'")[2].split(" ")[1]
@@ -188,7 +188,7 @@ class PokerStarsGame(object):
                 List of indices where the position is equal to blind type
 
         """
-        blind = self.data.index[self.data["Position"] == size].to_list()
+        blind = self.data["General"].index[self.data["General"]["Position"] == size].to_list()
         return blind
 
     def translate_hand(self, hand: List[str]) -> List[tuple]:
@@ -248,11 +248,13 @@ class PokerStarsGame(object):
                 full DataFrame for the game
         """
         new_df = self.data
-        for key, value in self.values_for_full_data.items():
-            new_df[key] = value
+        for df_key in new_df:
+            for key, value in self.values_for_full_data.items():
+                new_df[df_key][key] = value
 
             # reorders columns based on formatting in data_categories.py
-        self.reorder_columns(new_df)
+            if type(new_df[df_key]) == pd.DataFrame:
+                self.reorder_columns(new_df[df_key])
         return new_df
 
     def simulate_game(
@@ -457,11 +459,22 @@ class PokerStarsCollection(object):
         self.winners = [game.winners[0] for game in self.games_data.values()]
         self.winner_count = Counter(self.winners)
 
-        self.full_data = pd.concat(
-            [x.get_full_data() for x in self.games_data.values()]
-        )
-        self.full_data = self.full_data.reset_index(drop=True)
-        self.full_data = self.reorder_columns()
+        self.full_data = {
+
+        }
+
+        for game in self.games_data.values():
+            data = game.get_full_data()
+            for key in data.keys():
+                if key not in self.full_data.keys():
+                    self.full_data[key] = []
+                self.full_data[key].append(data[key])
+
+        for key in self.full_data:
+            self.full_data[key] = pd.concat(self.full_data[key])
+            self.full_data[key] = self.full_data[key].reset_index(drop=True)
+            # self.full_data[key] = self.reorder_columns()
+
         self.positions = None
 
     def process_file(self, split_files: bool = False):
@@ -528,10 +541,13 @@ class PokerStarsCollection(object):
         return hand_regex.findall(hand)[0].strip("[]").split()
 
     def reorder_columns(self):
-        new_column_labels = [
-            x for x in self.all_column_labels if x in self.full_data.columns.to_list()
-        ]
-        return self.full_data[new_column_labels]
+        for key in self.full_data.keys():
+            new_column_labels = [
+                x for x in self.all_column_labels if x in self.full_data[key].columns.to_list()
+            ]
+            self.full_data[key] = self.full_data[key][new_column_labels]
+
+        return self.full_data
 
     def translate_hand(self, hand):
         # translates hand from pokerstars output format to list of tuples
@@ -1044,19 +1060,20 @@ class PokerStarsCollection(object):
         Returns:
 
         """
-        total_pot = 0
+        total_pot = 0.0
 
         # dictionary will later be converted to a pandas df
         data_dict = {}
 
         # process file
         game_text = self.split_game_to_events(file=None, lines=lines)
+
         # get table cards
         table_cards = self.get_final_table_cards(game_text["SUMMARY"], lines)
 
         # pre-deal data
-        data_dict["pre_action"] = self.read_pre_deal_lines(game_text["HEADER"])
-        self.positions = data_dict["pre_action"]["Seat Number"].map(self.seats)
+        data_dict["General"] = self.read_pre_deal_lines(game_text["HEADER"])
+        self.positions = data_dict["General"]["Seat Number"].map(self.seats)
         for key, value in self.search_dict.items():
             try:
                 data_dict[key] = self.read_betting_action(
@@ -1073,56 +1090,70 @@ class PokerStarsCollection(object):
         ) = self.read_summary(game_text["SUMMARY"])
 
         # get player card and table data
-        data_dict["card_information"] = self.get_card_information(
+        data_dict["Card Information"] = self.get_card_information(
             data_dict["summary"], table_cards
         )
 
+        """self.search_dict = {
+            "Pre-Flop": "HOLE CARDS",
+            "Flop": "FLOP",
+            "Turn": "TURN",
+            "River": "RIVER",
+            "Showdown": "SHOW DOWN",
+        }"""
+
         # collect data
-        events_df = pd.concat([val for val in data_dict.values()], axis=1)
-        events_df["Player Name"] = list(events_df.index)
-        events_df.reset_index(inplace=True)
-        events_df["Position"] = events_df["Seat Number"].map(self.seats)
+        events_df = data_dict
+        for x in events_df.keys():
+            events_df[x]["Player Name"] = list(events_df[x].index)
+            # events_df[x].reset_index(inplace=True)
 
-        events_df["Pre-Flop Final Pot ($)"] = events_df["Pot Increase Pre-Flop"]
+        events_df["General"]["Position"] = events_df["General"]["Seat Number"].map(self.seats)
 
-        events_df["Pre-Flop Final Pot (BB)"] = (
-                events_df["Pre-Flop Final Pot ($)"] / events_df["Big Blind"]
+        # Pre-Flop
+        events_df["Pre-Flop"]["Pre-Flop Final Pot ($)"] = events_df["Pre-Flop"]["Pot Increase Pre-Flop"]
+
+        events_df["Pre-Flop"]["Pre-Flop Final Pot (BB)"] = (
+                events_df["Pre-Flop"]["Pre-Flop Final Pot ($)"] / events_df["General"]["Big Blind"]
         )
 
-        events_df["Total Added to Pot"] = events_df["Pre-Flop Added to Pot"]
+        events_df["General"]["Total Added to Pot"] = events_df["Pre-Flop"]["Pre-Flop Added to Pot"]
 
+        # Flop
         if "Flop" in data_dict.keys():
-            events_df["Flop Final Pot ($)"] = (
-                    events_df["Pot Increase Flop"] + events_df["Pre-Flop Final Pot ($)"]
+            events_df["Flop"]["Flop Final Pot ($)"] = (
+                    events_df["Flop"]["Pot Increase Flop"] + events_df["Pre-Flop"]["Pre-Flop Final Pot ($)"]
             )
-            events_df["Flop Final Pot (BB)"] = (
-                    events_df["Flop Final Pot ($)"] / events_df["Big Blind"]
+            events_df["Flop"]["Flop Final Pot (BB)"] = (
+                    events_df["Flop"]["Flop Final Pot ($)"] / events_df["General"]["Big Blind"]
             )
             if not data_dict["Flop"].empty:
-                events_df["Total Added to Pot"] += events_df["Flop Added to Pot"]
+                events_df["General"]["Total Added to Pot"] += events_df["Flop"]["Flop Added to Pot"]
 
+        # Turn
         if "Turn" in data_dict.keys():
-            events_df["Turn Final Pot ($)"] = (
-                    events_df["Pot Increase Turn"] + events_df["Flop Final Pot ($)"]
+            events_df["Turn"]["Turn Final Pot ($)"] = (
+                    events_df["Turn"]["Pot Increase Turn"] + events_df["Flop"]["Flop Final Pot ($)"]
             )
-            events_df["Turn Final Pot (BB)"] = (
-                    events_df["Turn Final Pot ($)"] / events_df["Big Blind"]
+            events_df["Turn"]["Turn Final Pot (BB)"] = (
+                    events_df["Turn"]["Turn Final Pot ($)"] / events_df["General"]["Big Blind"]
             )
             if not data_dict["Turn"].empty:
-                events_df["Total Added to Pot"] += events_df["Turn Added to Pot"]
+                events_df["General"]["Total Added to Pot"] += events_df["Turn"]["Turn Added to Pot"]
 
+        # River
         if "River" in data_dict.keys():
-            events_df["River Final Pot ($)"] = (
-                    events_df["Pot Increase River"] + events_df["Turn Final Pot ($)"]
+            events_df["River"]["River Final Pot ($)"] = (
+                    events_df["River"]["Pot Increase River"] + events_df["Turn"]["Turn Final Pot ($)"]
             )
-            events_df["River Final Pot (BB)"] = (
-                    events_df["River Final Pot ($)"] / events_df["Big Blind"]
+            events_df["River"]["River Final Pot (BB)"] = (
+                    events_df["River"]["River Final Pot ($)"] / events_df["General"]["Big Blind"]
             )
             if not data_dict["River"].empty:
-                events_df["Total Added to Pot"] += events_df["River Added to Pot"]
+                events_df["General"]["Total Added to Pot"] += events_df["River"]["River Added to Pot"]
 
         # these columns seem a bit useless so adding this as a temporary fix
-        events_df = events_df.drop(
+        """events_df = events_df.drop(
             [
                 "index",
                 "Seat Number",
@@ -1132,7 +1163,7 @@ class PokerStarsCollection(object):
                 "Is Small Blind",
             ],
             axis=1,
-        )
+        )"""
         game = PokerStarsGame(
             [item for sublist in game_text.values() for item in sublist],
             events_df,
