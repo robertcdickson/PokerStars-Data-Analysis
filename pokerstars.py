@@ -109,6 +109,7 @@ class PokerStarsGame(object):
 
         self.big_blind = self.get_blind("BB")
         self.small_blind = self.get_blind("SB")
+
         self.chip_leader = self.data["General"].index[
             self.data["General"]["Chips ($)"] == self.data["General"]["Chips ($)"].max()
             ].to_list()
@@ -237,6 +238,10 @@ class PokerStarsGame(object):
                 return pot
 
     def get_data_from_text(self):
+        """
+        Function to get all data from a text file. NOT IMPLEMENTED
+
+        """
         pass
 
     def get_full_data(self) -> pd.DataFrame:
@@ -471,16 +476,18 @@ class PokerStarsCollection(object):
                 if key not in self.full_data.keys():
                     self.full_data[key] = []
                 self.full_data[key].append(data[key])
-        for key in self.full_data:
 
+        for key in self.full_data:
             self.full_data[key] = pd.concat(self.full_data[key])
             self.full_data[key] = self.full_data[key].reset_index(drop=True)
             self.full_data[key] = self.reorder_columns(self.full_data[key])
 
         self.positions = None
 
-    def process_file(self, split_files: bool = False):
+    def process_file(self, split_files: bool = False) -> dict:
         """
+
+        Splits a PokerStars file in to individual games
 
         Args:
             split_files (bool):
@@ -543,6 +550,17 @@ class PokerStarsCollection(object):
         return hand_regex.findall(hand)[0].strip("[]").split()
 
     def reorder_columns(self, df):
+        """
+        Reorders a Dataframe's columns in to the order specificed in self.all_column_labels
+
+        Args:
+            df (Dataframe):
+                Pandas dataframe to reorder
+
+        Returns:
+            df (Dataframe):
+                The reordered dataframe
+        """
 
         new_column_labels = [
             x for x in self.all_column_labels if x in df.columns.to_list()
@@ -556,6 +574,21 @@ class PokerStarsCollection(object):
         return [(self.values[card[0]], self.suits[card[1]]) for card in hand]
 
     def read_hand_file(self, file):
+
+        """
+        Reads a PokerStars file and finds any cards in that file
+
+        Args:
+            file (str):
+                file name
+
+        Returns:
+            translated_hand (tuple):
+                A hand translated in to a tuple format
+            translated_board (list)
+                A list of translated cards on the board
+
+        """
         # define regex for later reading
         hand_regex = re.compile("\[.*\]")
 
@@ -572,6 +605,7 @@ class PokerStarsCollection(object):
 
         return translated_hand, translated_board
 
+    @staticmethod
     def get_button_seat(self, file):
         # returns the index of the seat currently on the button
         with open(file, "r") as rf:
