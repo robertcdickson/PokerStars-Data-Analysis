@@ -81,7 +81,7 @@ class PokerStarsGame(object):
         self.winning_rankings = winning_ranking
 
         self.hero = hero
-        self.hero_cards = hero_cards
+        self._hero_cards = hero_cards
 
         self.flop_cards = None
         self.turn_card = None
@@ -107,8 +107,8 @@ class PokerStarsGame(object):
             self.flop_card_2 = self.flop_cards[1].string
             self.flop_card_3 = self.flop_cards[2].string
 
-        self.big_blind = self.get_blind("BB")
-        self.small_blind = self.get_blind("SB")
+        self._big_blind = self.get_blind("BB")
+        self._small_blind = self.get_blind("SB")
 
         self.chip_leader = self.data["General"].index[
             self.data["General"]["Chips ($)"] == self.data["General"]["Chips ($)"].max()
@@ -127,8 +127,8 @@ class PokerStarsGame(object):
             self.game_type = "Zoom"
             self.game_code = self.game_text[0].split("#")[1].split(":")[0]
             self.stakes = self.game_text[0].split("(")[1].split(")")[0]
-            self.big_blind_size = float(self.stakes.split("/")[1].strip("$"))
-            self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self.big_blind_size
+            self._big_blind_size = float(self.stakes.split("/")[1].strip("$"))
+            self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self._big_blind_size
             self.date = self.game_text[0].split("-")[1].split("[")[0].split(" ")[1]
             self.time = self.game_text[0].split("-")[1].split("[")[0].split(" ")[2]
             self.max_players = self.game_text[1].split("'")[2].split(" ")[1]
@@ -137,8 +137,8 @@ class PokerStarsGame(object):
             self.game_type = "Normal"
             self.game_code = self.game_text[0].split("#")[1].split(":")[0]
             self.stakes = self.game_text[0].split("(")[1].split(")")[0].split(" ")[0]
-            self.big_blind_size = float(self.stakes.split("/")[1].strip("$").split()[0])
-            self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self.big_blind_size
+            self._big_blind_size = float(self.stakes.split("/")[1].strip("$").split()[0])
+            self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self._big_blind_size
             self.date = self.game_text[0].split("-")[1].split("[")[0].split(" ")[1]
             self.time = self.game_text[0].split("-")[1].split("[")[0].split(" ")[2]
             self.max_players = self.game_text[1].split("'")[2].split(" ")[1]
@@ -443,7 +443,7 @@ class PokerStarsCollection(object):
         self.file = file
         self.working_dir = working_dir
         self.hero = hero
-        self.hero_cards = None
+        self._hero_cards = None
 
         self._search_dict = {
             "Pre-Flop": "HOLE CARDS",
@@ -464,10 +464,10 @@ class PokerStarsCollection(object):
 
         self._all_column_labels = full_column_headings
 
-        self.small_blind = 0.0
-        self.big_blind = 0.0
-        self.small_blind_player = None
-        self.big_blind_player = None
+        self._small_blind = 0.0
+        self._big_blind = 0.0
+        self._small_blind_player = None
+        self._big_blind_player = None
 
         i = 0
         for key, game in self._games_text.items():
@@ -675,15 +675,15 @@ class PokerStarsCollection(object):
 
         button_seat = int(re.search("#\d", player_list[1]).group().strip("#"))
         stakes = []
-        self.small_blind = 0
-        self.big_blind = 0
+        self._small_blind = 0
+        self._big_blind = 0
         for line in player_list:
             if line.startswith("PokerStars "):
                 stakes = line.split("(")[1]
                 stakes = stakes.split(")")[0]
                 stakes = stakes.split("/")
-                self.small_blind = stakes[0].lstrip("$")
-                self.big_blind = stakes[1].lstrip("$").split()[0]
+                self._small_blind = stakes[0].lstrip("$")
+                self._big_blind = stakes[1].lstrip("$").split()[0]
 
             player = re.findall(":.*\(", line)
 
@@ -703,9 +703,9 @@ class PokerStarsCollection(object):
                 data_dict["Chips ($)"].append(chips)
 
             if "posts small blind" in line:
-                self.small_blind_player = line.split(":")[0].replace(" ", "")
+                self._small_blind_player = line.split(":")[0].replace(" ", "")
             if "posts big blind" in line:
-                self.big_blind_player = line.split(":")[0].replace(" ", "")
+                self._big_blind_player = line.split(":")[0].replace(" ", "")
 
         # renumber seat numbers for ordering of play
         new_seat_order = [i for i in range(1, len(data_dict["Seat Number"]) + 1)]
@@ -733,15 +733,15 @@ class PokerStarsCollection(object):
         ]
 
         data_df = pd.DataFrame(data_dict).set_index(["Player Name"])
-        data_df["Small Blind"] = float(self.small_blind)
-        data_df["Big Blind"] = float(self.big_blind)
+        data_df["Small Blind"] = float(self._small_blind)
+        data_df["Big Blind"] = float(self._big_blind)
 
         conditions = [
             (data_df["Is Small Blind"] == True),
             (data_df["Is Big Blind"] == True),
             (data_df["Is Small Blind"] == False) & (data_df["Is Big Blind"] == False),
         ]
-        values = [float(self.small_blind), float(self.big_blind), 0.0]
+        values = [float(self._small_blind), float(self._big_blind), 0.0]
         data_df["Added to Pot Pre-Deal"] = np.select(conditions, values)
 
         return data_df
@@ -789,7 +789,7 @@ class PokerStarsCollection(object):
                         hero_cards_str = ""
                         for x in cards:
                             hero_cards_str += str(x) + " "
-                        self.hero_cards = hero_cards_str.rstrip()
+                        self._hero_cards = hero_cards_str.rstrip()
                         cards = None
 
             elif (
@@ -871,21 +871,21 @@ class PokerStarsCollection(object):
                                     not in data[player_name]
                                     and play_phase + " Raise" not in data[player_name]
                             ):
-                                if player_name == self.small_blind_player:
+                                if player_name == self._small_blind_player:
                                     data[player_name][
                                         f"{play_phase} Added to Pot"
-                                    ] = float(self.small_blind)
-                                    pot += float(self.small_blind)
-                                if player_name == self.big_blind_player:
+                                    ] = float(self._small_blind)
+                                    pot += float(self._small_blind)
+                                if player_name == self._big_blind_player:
                                     data[player_name][
                                         f"{play_phase} Added to Pot"
-                                    ] = float(self.big_blind)
-                                    pot += float(self.big_blind)
+                                    ] = float(self._big_blind)
+                                    pot += float(self._big_blind)
 
                     # if player open limps
                     if number_of_raises == 1 and play_phase == "Pre-Flop":
                         data[player_name][play_phase + " Limp"] = True
-                        pot += float(self.big_blind)
+                        pot += float(self._big_blind)
 
                     # else calling a bet
                     else:
@@ -921,10 +921,10 @@ class PokerStarsCollection(object):
                         data[player_name]["Fold to All In Raise"] = True
 
                     if play_phase == "Pre-Flop":
-                        if player_name == self.small_blind_player:
-                            pot += float(self.small_blind)
-                        if player_name == self.big_blind_player:
-                            pot += float(self.big_blind)
+                        if player_name == self._small_blind_player:
+                            pot += float(self._small_blind)
+                        if player_name == self._big_blind_player:
+                            pot += float(self._big_blind)
 
                         if number_of_raises == 1:
                             data[player_name][f"Fold to {play_phase} Limp"] = True
@@ -1096,7 +1096,7 @@ class PokerStarsCollection(object):
                 winners.append(b)
 
         if self.hero not in data.keys():
-            data[self.hero] = str(self.hero_cards)
+            data[self.hero] = str(self._hero_cards)
 
         return (
             pd.Series(list(data.values()), index=list(data.keys()), dtype="string"),
