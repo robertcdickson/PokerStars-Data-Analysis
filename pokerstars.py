@@ -121,7 +121,7 @@ class PokerStarsGame(object):
 
         self.final_pot = self.get_final_pot()
 
-        self.all_column_labels = full_column_headings
+        self._all_column_labels = full_column_headings
 
         if "Zoom" in self.game_text[0]:
             self.game_type = "Zoom"
@@ -173,7 +173,7 @@ class PokerStarsGame(object):
                 Reordered dataframe
 
         """
-        new_column_labels = [x for x in self.all_column_labels if x in df.columns]
+        new_column_labels = [x for x in self._all_column_labels if x in df.columns]
         return df[new_column_labels]
 
     def get_blind(self, size: str) -> list:
@@ -447,7 +447,7 @@ class PokerStarsCollection(object):
         self.games_text = self.process_file(split_files=write_files)
         self.games_data = {}
 
-        self.all_column_labels = full_column_headings
+        self._all_column_labels = full_column_headings
 
         self.small_blind = 0.0
         self.big_blind = 0.0
@@ -512,11 +512,11 @@ class PokerStarsCollection(object):
             write = False
 
             for line in rf.readlines():
-
                 # at present can only look at hands from cash games
                 if (
                         "PokerStarsCollection Hand" in line
                         or "PokerStars Zoom Hand" in line
+                        or "PokerStars Hand" in line
                 ):
                     start = True
                     write = True
@@ -551,7 +551,7 @@ class PokerStarsCollection(object):
 
     def reorder_columns(self, df):
         """
-        Reorders a Dataframe's columns in to the order specificed in self.all_column_labels
+        Reorders a Dataframe's columns in to the order specificed in self._all_column_labels
 
         Args:
             df (Dataframe):
@@ -563,7 +563,7 @@ class PokerStarsCollection(object):
         """
 
         new_column_labels = [
-            x for x in self.all_column_labels if x in df.columns.to_list()
+            x for x in self._all_column_labels if x in df.columns.to_list()
         ]
         df = df[new_column_labels]
 
@@ -611,7 +611,8 @@ class PokerStarsCollection(object):
         with open(file, "r") as rf:
             return int(re.search("#\d", rf.readlines()[1]).group().strip("#"))
 
-    def split_game_to_events(self, file, lines):
+    @staticmethod
+    def split_game_to_events(file, lines):
         # takes in a pokerstars game and returns a dictionary with different pieces of data
         data_dicts = {}
         if file:
@@ -653,7 +654,7 @@ class PokerStarsCollection(object):
             return data_dicts
 
     def read_pre_deal_lines(self, player_list):
-
+        # Function that reads data from the pre-deal section of the game
         stakes = None
         data_dict = {"Player Name": [], "Seat Number": [], "Chips ($)": []}
 
@@ -667,7 +668,7 @@ class PokerStarsCollection(object):
                 stakes = stakes.split(")")[0]
                 stakes = stakes.split("/")
                 self.small_blind = stakes[0].lstrip("$")
-                self.big_blind = stakes[1].lstrip("$")
+                self.big_blind = stakes[1].lstrip("$").split()[0]
 
             player = re.findall(":.*\(", line)
 
@@ -731,6 +732,19 @@ class PokerStarsCollection(object):
         return data_df
 
     def read_betting_action(self, lines_list, play_phase=None):
+        """
+        Function that gets data from a single play phase
+        Args:
+            lines_list (list):
+                A list of lines in the play phase
+            play_phase (str):
+                Betting round. Values allowed are "Pre-Flop", "Flop", "Turn" and "River"
+
+        Returns:
+            df (dataframe):
+                All data from this play phase
+
+        """
         data = {}
         general_data = {}
         pot = 0.0
@@ -772,6 +786,7 @@ class PokerStarsCollection(object):
                     data[player_name] = {}
 
                 if f"{play_phase} Added to Pot" not in data[player_name].keys():
+
                     data[player_name][f"{play_phase} Added to Pot"] = 0.0
 
                 action = line.split(":")[1].rstrip()
@@ -1111,12 +1126,12 @@ class PokerStarsCollection(object):
         data_dict["General"] = self.read_pre_deal_lines(game_text["HEADER"])
         self.positions = data_dict["General"]["Seat Number"].map(self.seats)
         for key, value in self.search_dict.items():
-            try:
-                data_dict[key] = self.read_betting_action(
-                    game_text[value], play_phase=key
-                )
-            except KeyError:
-                break
+
+            if value in game_text.keys():
+                if game_text[value]:
+                    data_dict[key] = self.read_betting_action(
+                        game_text[value], play_phase=key
+                    )
 
         (
             data_dict["summary"],
@@ -1154,7 +1169,6 @@ class PokerStarsCollection(object):
         )
 
         events_df["General"]["Total Added to Pot"] = events_df["Pre-Flop"]["Pre-Flop Added to Pot"]
-
         # Flop
         if "Flop" in data_dict.keys():
             events_df["Flop"]["Flop Final Pot ($)"] = (
@@ -1283,5 +1297,5 @@ class PokerStarsCollection(object):
             table = pa.Table.from_pandas(save_data)
             pq.write_table(table, save_file)
         else:
-            table = pa.Table.from_pandas(self.full_data)
-            pq.write_table(table, save_file)
+            table_pre_flop = pa.Table.from_pandas(self.full_data["Pre-Flop"])
+            pq.write_table(table_pre_flop, save_file + "_pre-flop.parquet")
