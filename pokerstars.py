@@ -144,7 +144,18 @@ class PokerStarsGame(object):
             self.max_players = self.game_text[1].split("'")[2].split(" ")[1]
             self.table_name = self.game_text[1].split("'")[1]
 
-        self._values_for_full_data = {
+        self._values_for_all_df = {
+            "Game Type": self.game_type,
+            "Game Code": self.game_code,
+            "Stakes": self.stakes,
+            "Flop Card 1": self.flop_card_1,
+            "Flop Card 2": self.flop_card_2,
+            "Flop Card 3": self.flop_card_3,
+            "Turn Card": self.turn_card,
+            "River Card": self.river_card,
+        }
+
+        self._values_for_general_df = {
             "Game Type": self.game_type,
             "Game Code": self.game_code,
             "Stakes": self.stakes,
@@ -254,8 +265,12 @@ class PokerStarsGame(object):
         """
         new_df = self.data
         for df_key in new_df:
-            for key, value in self._values_for_full_data.items():
-                new_df[df_key][key] = value
+            if df_key == "General":
+                for key, value in self._values_for_general_df.items():
+                    new_df[df_key][key] = value
+            else:
+                for key, value in self._values_for_all_df.items():
+                    new_df[df_key][key] = value
 
             # reorders columns based on formatting in data_categories.py
             if type(new_df[df_key]) == pd.DataFrame:

@@ -1,7 +1,7 @@
 full_column_headings = [
 
     # General Data
-    "Has Straight",
+    "Game Code",
     "Player Name",
     "Stakes",
     "Small Blind",
@@ -10,7 +10,7 @@ full_column_headings = [
     "Game Type",
     "Date",
     "Time",
-    "Game Code",
+
     "Table Name",
     "Chips ($)",
     "Chips (BB)",
@@ -278,6 +278,7 @@ full_column_headings = [
     # Hand Rankings
     "Pocket Pair",
     "Suited Hand",
+    "Has Straight",
 
     # "Pot Increase Pre-Flop",
     # "Pot Increase Flop",
