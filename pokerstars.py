@@ -50,9 +50,9 @@ class PokerStarsGame(object):
                 A list of hero's cards
 
         """
-        self.suits = {"c": "clubs", "s": "spades", "d": "diamonds", "h": "hearts"}
+        self._suits = {"c": "clubs", "s": "spades", "d": "diamonds", "h": "hearts"}
 
-        self.values = {
+        self._values = {
             "2": 2,
             "3": 3,
             "4": 4,
@@ -68,7 +68,7 @@ class PokerStarsGame(object):
             "A": 14,
         }
 
-        self.deck = [Card(value + suit) for suit in self.suits for value in self.values]
+        self.deck = [Card(value + suit) for suit in self._suits for value in self._values]
 
         if data is None:
             self.data = None  # self.get_data_from_text()
@@ -144,7 +144,7 @@ class PokerStarsGame(object):
             self.max_players = self.game_text[1].split("'")[2].split(" ")[1]
             self.table_name = self.game_text[1].split("'")[1]
 
-        self.values_for_full_data = {
+        self._values_for_full_data = {
             "Game Type": self.game_type,
             "Game Code": self.game_code,
             "Stakes": self.stakes,
@@ -205,7 +205,7 @@ class PokerStarsGame(object):
                 List of tuples of different cards
         """
         translated_hand = [
-            (int(self.values[card[0]]), self.suits[card[1]]) for card in hand
+            (int(self._values[card[0]]), self._suits[card[1]]) for card in hand
         ]
         return translated_hand
 
@@ -254,7 +254,7 @@ class PokerStarsGame(object):
         """
         new_df = self.data
         for df_key in new_df:
-            for key, value in self.values_for_full_data.items():
+            for key, value in self._values_for_full_data.items():
                 new_df[df_key][key] = value
 
             # reorders columns based on formatting in data_categories.py
@@ -398,9 +398,9 @@ class PokerStarsCollection(object):
                 Max number of games to be processed.
         """
 
-        self.suits = {"c": "clubs", "s": "spades", "d": "diamonds", "h": "hearts"}
+        self._suits = {"c": "clubs", "s": "spades", "d": "diamonds", "h": "hearts"}
 
-        self.values = {
+        self._values = {
             "2": 2,
             "3": 3,
             "4": 4,
@@ -430,7 +430,7 @@ class PokerStarsCollection(object):
         self.hero = hero
         self.hero_cards = None
 
-        self.search_dict = {
+        self._search_dict = {
             "Pre-Flop": "HOLE CARDS",
             "Flop": "FLOP",
             "Turn": "TURN",
@@ -443,8 +443,8 @@ class PokerStarsCollection(object):
         else:
             self.max_games = max_games
 
-        self.encoding = encoding
-        self.games_text = self.process_file(split_files=write_files)
+        self._encoding = encoding
+        self._games_text = self.process_file(split_files=write_files)
         self.games_data = {}
 
         self._all_column_labels = full_column_headings
@@ -455,7 +455,7 @@ class PokerStarsCollection(object):
         self.big_blind_player = None
 
         i = 0
-        for key, game in self.games_text.items():
+        for key, game in self._games_text.items():
             if self.max_games and i >= self.max_games:
                 break
             self.games_data[key] = self.read_pokerstars_file(lines=game, game_index=i)
@@ -503,7 +503,7 @@ class PokerStarsCollection(object):
         file_number = 0
 
         # open file with pokerstars data in it
-        with open(self.file, "r", encoding=self.encoding) as rf:
+        with open(self.file, "r", encoding=self._encoding) as rf:
 
             line_marker = 0
 
@@ -571,7 +571,7 @@ class PokerStarsCollection(object):
 
     def translate_hand(self, hand):
         # translates hand from pokerstars output format to list of tuples
-        return [(self.values[card[0]], self.suits[card[1]]) for card in hand]
+        return [(self._values[card[0]], self._suits[card[1]]) for card in hand]
 
     def read_hand_file(self, file):
 
@@ -1125,7 +1125,7 @@ class PokerStarsCollection(object):
         # pre-deal data
         data_dict["General"] = self.read_pre_deal_lines(game_text["HEADER"])
         self.positions = data_dict["General"]["Seat Number"].map(self.seats)
-        for key, value in self.search_dict.items():
+        for key, value in self._search_dict.items():
 
             if value in game_text.keys():
                 if game_text[value]:
@@ -1145,7 +1145,7 @@ class PokerStarsCollection(object):
             data_dict["summary"], table_cards
         )
 
-        """self.search_dict = {
+        """self._search_dict = {
             "Pre-Flop": "HOLE CARDS",
             "Flop": "FLOP",
             "Turn": "TURN",
