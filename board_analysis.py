@@ -214,24 +214,27 @@ class SingleBoardAnalysis(object):
     def analyse_cards(self):
 
         data_dict = {
-            "Has Straight": False,
-            "Straight Ranking": None,
-            "Straight Cards": None,
-            "Straight Street": None,
-
-            "Has Flush": False,
-            "Flush Ranking": None,
-            "Flush Cards": None,
-            "Flush Street": None,
-
             "Has Royal Flush": False,
             "Has Straight Flush": False,
-            "Has Full House": False,
             "Has Four-Of-A-Kind": False,
+            "Has Full House": False,
+            "Has Flush": False,
+            "Has Straight": False,
             "Has Three-Of-A-Kind": False,
             "Has Two Pair": False,
             "Has One Pair": False,
             "Has High Card": False,
+
+            "Straight Ranking": None,
+            "Straight Cards": None,
+            "Straight Street": None,
+
+            "Flush Ranking": None,
+            "Flush Cards": None,
+            "Flush Street": None,
+
+            "Best Ranking": None,
+
         }
 
         # combine players cards and table cards to give rankable list
@@ -293,6 +296,8 @@ class SingleBoardAnalysis(object):
                 data_dict["Has Royal Flush"] = True
             elif flush == 8:
                 data_dict["Has Straight Flush"] = True
+                data_dict["Straight Flush Ranking"] = flush_ranking
+                data_dict["Straight Flush Cards"] = flush_cards
 
         # check for all x-of-a-kind
         four_of_a_kind, three_of_a_kind, pairs = self.n_check(all_cards)
@@ -381,5 +386,10 @@ class SingleBoardAnalysis(object):
             )
             data_dict["High Card Cards"] = kickers
             kicker_values = [x.value for x in kickers]
+
+        for key in data_dict:
+            if "Has" in key:
+                if data_dict[key] is True:
+                    data_dict["Best Ranking"] = key[4:]
 
         return data_dict
