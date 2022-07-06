@@ -286,6 +286,20 @@ full_column_headings = [
     "Straight Cards",
     "Straight Street",
 
+    "Has Flush",
+    "Flush Ranking",
+    "Flush Cards",
+    "Flush Street",
+
+    "Has Royal Flush",
+    "Has Straight Flush",
+    "Has Full House",
+    "Has Four-Of-A-Kind",
+    "Has Three-Of-A-Kind",
+    "Has Two Pair",
+    "Has One Pair",
+    "Has High Card",
+
 
     # "Pot Increase Pre-Flop",
     # "Pot Increase Flop",

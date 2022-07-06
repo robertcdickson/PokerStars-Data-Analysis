@@ -218,14 +218,20 @@ class SingleBoardAnalysis(object):
             "Straight Ranking": None,
             "Straight Cards": None,
             "Straight Street": None,
+
             "Has Flush": False,
             "Flush Ranking": None,
             "Flush Cards": None,
-            "Flopped Flush": False,
-            "Turned Flush": False,
-            "Rivered Flush": False,
+            "Flush Street": None,
+
             "Has Royal Flush": False,
             "Has Straight Flush": False,
+            "Has Full House": False,
+            "Has Four-Of-A-Kind": False,
+            "Has Three-Of-A-Kind": False,
+            "Has Two Pair": False,
+            "Has One Pair": False,
+            "Has High Card": False,
         }
 
         # combine players cards and table cards to give rankable list
@@ -275,11 +281,11 @@ class SingleBoardAnalysis(object):
             data_dict["Flush Cards"] = flush_cards
 
             if all([x in all_cards[:-2] for x in flush_cards]):
-                data_dict["Flopped Flush"] = True
+                data_dict["Flush Street"] = "Flop"
             elif all([x in all_cards[:-2] for x in flush_cards]):
-                data_dict["Turned Flush"] = True
+                data_dict["Flush Street"] = "Turn"
             else:
-                data_dict["Rivered Flush"] = True
+                data_dict["Flush Street"] = "River"
 
             # This is going to have a weird edge case when a flopped flush turns in to a straight flush need to add the
             # if all bit above here for that
