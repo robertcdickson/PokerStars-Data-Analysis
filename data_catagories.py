@@ -276,9 +276,16 @@ full_column_headings = [
     "Total Added to Pot",
 
     # Hand Rankings
+    "Player Card 1",
+    "Player Card 2",
+
     "Pocket Pair",
     "Suited Hand",
     "Has Straight",
+    "Straight Ranking",
+    "Straight Cards",
+    "Straight Street",
+
 
     # "Pot Increase Pre-Flop",
     # "Pot Increase Flop",

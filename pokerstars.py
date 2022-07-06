@@ -1260,6 +1260,8 @@ class PokerStarsCollection(object):
         data = {x: {} for x in player_cards.index}
 
         for player, hand in player_cards.items():
+            data[player]["Player Card 1"] = hand[0:2]
+            data[player]["Player Card 2"] = hand[3:5]
             new_hand = [Card(hand[0:2]), Card(hand[3:5])]
             if hand[0] == hand[3]:
                 data[player]["Pocket Pair"] = True

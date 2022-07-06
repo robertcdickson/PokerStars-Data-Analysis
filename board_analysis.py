@@ -217,9 +217,7 @@ class SingleBoardAnalysis(object):
             "Has Straight": False,
             "Straight Ranking": None,
             "Straight Cards": None,
-            "Flopped Straight": False,
-            "Turned Straight": False,
-            "Rivered Straight": False,
+            "Straight Street": None,
             "Has Flush": False,
             "Flush Ranking": None,
             "Flush Cards": None,
@@ -261,11 +259,11 @@ class SingleBoardAnalysis(object):
             data_dict["Straight Cards"] = straight_cards
 
             if all([x in all_cards[:-2] for x in straight_cards]):
-                data_dict["Flopped Straight"] = True
-            elif all([x in all_cards[:-2] for x in straight_cards]):
-                data_dict["Turned Straight"] = True
+                data_dict["Straight Street"] = "Flop"
+            elif all([x in all_cards[:-1] for x in straight_cards]):
+                data_dict["Straight Street"] = "Turn"
             else:
-                data_dict["Rivered Straight"] = True
+                data_dict["Straight Street"] = "River"
 
         # check for flush or straight flush
         flush_cards, flush, flush_ranking = self.flush_check(all_cards, straight_cards)
