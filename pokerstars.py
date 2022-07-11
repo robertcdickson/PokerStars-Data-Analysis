@@ -126,6 +126,7 @@ class PokerStarsGame(object):
         if "Zoom" in self.game_text[0]:
             self.game_type = "Zoom"
             self.game_code = self.game_text[0].split("#")[1].split(":")[0]
+            print(self.game_code)
             self.stakes = self.game_text[0].split("(")[1].split(")")[0]
             self._big_blind_size = float(self.stakes.split("/")[1].strip("$"))
             self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self._big_blind_size
@@ -136,6 +137,7 @@ class PokerStarsGame(object):
         else:
             self.game_type = "Normal"
             self.game_code = self.game_text[0].split("#")[1].split(":")[0]
+            print(self.game_code)
             self.stakes = self.game_text[0].split("(")[1].split(")")[0].split(" ")[0]
             self._big_blind_size = float(self.stakes.split("/")[1].strip("$").split()[0])
             self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self._big_blind_size
@@ -471,6 +473,10 @@ class PokerStarsCollection(object):
 
         i = 0
         for key, game in self._games_text.items():
+            if "Tournament" in game[0] or "Hold'em" not in game[0]:  # ignoring tournament hands for the moment
+                continue
+            if not i % 100:
+                print(f"Game {i}")
             if self.max_games and i >= self.max_games:
                 break
             self.games_data[key] = self.read_pokerstars_file(lines=game, game_index=i)
@@ -696,7 +702,7 @@ class PokerStarsCollection(object):
                 player_name = player[0][2:-2]
                 chips = float(
                     line_list[-4].strip("($")
-                )  # TODO: THIS MAY BE A PROBLEM TEST
+                )
 
                 data_dict["Player Name"].append(player_name)
                 data_dict["Seat Number"].append(seat_number)
@@ -1078,18 +1084,19 @@ class PokerStarsCollection(object):
         for line in lines_list:
             if "showed" in line:
                 a = re.sub("\(.*\)", "", line.split("showed")[0])
-                b = re.sub("Seat [0-9]: ", "", a).strip()
-                data[b] = re.findall("\[.+]", line)[0].strip("[]")
+                name = re.sub("Seat [0-9]: ", "", a).strip()
+                value = line.split("showed")[1].split("]")[0].lstrip(" [")
+                data[name] = value
 
                 if "won" in line:
                     if "showed" in line:
-                        winning_hands.append(data[b])
+                        winning_hands.append(data[name])
                         winning_ranking = line.split("with")[1].strip(" \n")
-                    winners.append(b)
+                    winners.append(name)
             elif "mucked" in line:
                 a = re.sub("\(.*\)", "", line.split("mucked")[0])
                 b = re.sub("Seat [0-9]: ", "", a).strip()
-                data[b] = re.findall("\[.+]", line)[0].strip("[]")
+                data[b] = line[-7:-2]
             elif "collected" in line:
                 a = re.sub("\(.*\)", "", line.split("collected")[0])
                 b = re.sub("Seat [0-9]: ", "", a).strip()
@@ -1143,7 +1150,7 @@ class PokerStarsCollection(object):
         for key, value in self._search_dict.items():
 
             if value in game_text.keys():
-                if game_text[value]:
+                if game_text[value] and len(game_text[value]) > 1:
                     data_dict[key] = self.read_betting_action(
                         game_text[value], play_phase=key
                     )
@@ -1297,7 +1304,15 @@ class PokerStarsCollection(object):
             for game in self.games_data.values()
             if winner in game.winners
         }
+    def save_to_csv_files(self, file_root):
+        """
+        A function to save all dataframes to csv files ready for reading
+        Args:
+            file_root:
 
+        Returns:
+
+        """
     def save_data(self, save_file):
         import pyarrow as pa
         import pyarrow.parquet as pq
