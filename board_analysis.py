@@ -217,6 +217,7 @@ class SingleBoardAnalysis(object):
             "Has Royal Flush": False,
             "Has Straight Flush": False,
             "Has Four-Of-A-Kind": False,
+
             "Has Full House": False,
             "Has Flush": False,
             "Has Straight": False,
@@ -225,13 +226,29 @@ class SingleBoardAnalysis(object):
             "Has One Pair": False,
             "Has High Card": False,
 
-            "Straight Ranking": None,
-            "Straight Cards": None,
-            "Straight Street": None,
+            # '"Full House Ranking": None, # not currently implemented
+            "Full House Cards": None,
+            "Full House Street": None,
 
             "Flush Ranking": None,
             "Flush Cards": None,
             "Flush Street": None,
+
+            "Straight Ranking": None,
+            "Straight Cards": None,
+            "Straight Street": None,
+
+            "Three-Of-A-Kind Ranking": None,
+            "Three-Of-A-Kind Cards": None,
+            "Three-Of-A-Kind Street": None,
+
+            "Two Pair Ranking": None,
+            "Two Pair Cards": None,
+            "Two Pair Street": None,
+
+            "One Pair Ranking": None,
+            "One Pair Cards": None,
+            "One Pair Street": None,
 
             "Best Ranking": None,
 
@@ -285,7 +302,7 @@ class SingleBoardAnalysis(object):
 
             if all([x in all_cards[:-2] for x in flush_cards]):
                 data_dict["Flush Street"] = "Flop"
-            elif all([x in all_cards[:-2] for x in flush_cards]):
+            elif all([x in all_cards[:-1] for x in flush_cards]):
                 data_dict["Flush Street"] = "Turn"
             else:
                 data_dict["Flush Street"] = "River"
@@ -330,6 +347,13 @@ class SingleBoardAnalysis(object):
                 if card.value == max(three_of_a_kind) or card.value == max(pairs)
             ]
 
+            if all([x in all_cards[:-2] for x in full_house_cards]):
+                data_dict["Full House Street"] = "Flop"
+            elif all([x in all_cards[:-1] for x in full_house_cards]):
+                data_dict["Full House Street"] = "Turn"
+            else:
+                data_dict["Full House Street"] = "River"
+
             # sorts by count 3 then by count 2
             full_house_cards = sorted(
                 full_house_cards,
@@ -350,7 +374,15 @@ class SingleBoardAnalysis(object):
                 key=lambda x: x.value,
                 reverse=True,
             )
-            data_dict["Three-Of-A-Kind Cards"] = three_of_a_kind + kickers
+
+            if all([x in all_cards[:-2] for x in three_of_a_kind_cards]):
+                data_dict["Three-Of-A-Kind Street"] = "Flop"
+            elif all([x in all_cards[:-1] for x in three_of_a_kind_cards]):
+                data_dict["Three-Of-A-Kind Street"] = "Turn"
+            else:
+                data_dict["Three-Of-A-Kind Street"] = "River"
+
+            data_dict["Three-Of-A-Kind Cards"] = three_of_a_kind_cards + kickers
 
         elif pairs:
             if len(pairs) > 1:
@@ -365,8 +397,17 @@ class SingleBoardAnalysis(object):
                     key=lambda x: x.value,
                     reverse=True,
                 )
+                two_pair_cards = [card for card in all_cards if card.value in highest_pairs]
                 kicker_values = [x.value for x in kickers]
-                data_dict["Two Pair Cards"] = highest_pairs + kickers
+
+                if all([x in all_cards[:-2] for x in two_pair_cards]):
+                    data_dict["Two Pair Street"] = "Flop"
+                elif all([x in all_cards[:-1] for x in two_pair_cards]):
+                    data_dict["Two Pair Street"] = "Turn"
+                else:
+                    data_dict["Two Pair Street"] = "River"
+
+                data_dict["Two Pair Cards"] = two_pair_cards + kickers
 
             else:
                 data_dict["Has One Pair"] = True
@@ -376,9 +417,17 @@ class SingleBoardAnalysis(object):
                     key=lambda x: x.value,
                     reverse=True,
                 )
-                data_dict["One Pair Cards"] = [
-                    card for card in all_cards if card.value == highest_pair
-                ] + kickers
+
+                one_pair_cards = [card for card in all_cards if card.value == highest_pair]
+
+                if all([x in all_cards[:-2] for x in one_pair_cards]):
+                    data_dict["One Pair Street"] = "Flop"
+                elif all([x in all_cards[:-1] for x in one_pair_cards]):
+                    data_dict["One Pair Street"] = "Turn"
+                else:
+                    data_dict["One Pair Street"] = "River"
+
+                data_dict["One Pair Cards"] = one_pair_cards + kickers
         else:
             data_dict["Has High Card"] = True
             kickers = sorted(
