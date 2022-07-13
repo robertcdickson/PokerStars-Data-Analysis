@@ -126,7 +126,6 @@ class PokerStarsGame(object):
         if "Zoom" in self.game_text[0]:
             self.game_type = "Zoom"
             self.game_code = self.game_text[0].split("#")[1].split(":")[0]
-            print(self.game_code)
             self.stakes = self.game_text[0].split("(")[1].split(")")[0]
             self._big_blind_size = float(self.stakes.split("/")[1].strip("$"))
             self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self._big_blind_size
@@ -137,7 +136,6 @@ class PokerStarsGame(object):
         else:
             self.game_type = "Normal"
             self.game_code = self.game_text[0].split("#")[1].split(":")[0]
-            print(self.game_code)
             self.stakes = self.game_text[0].split("(")[1].split(")")[0].split(" ")[0]
             self._big_blind_size = float(self.stakes.split("/")[1].strip("$").split()[0])
             self.data["General"]["Chips (BB)"] = self.data["General"]["Chips ($)"] / self._big_blind_size
@@ -807,7 +805,6 @@ class PokerStarsCollection(object):
                     data[player_name] = {}
 
                 if f"{play_phase} Added to Pot" not in data[player_name].keys():
-
                     data[player_name][f"{play_phase} Added to Pot"] = 0.0
 
                 action = line.split(":")[1].rstrip()
@@ -1304,6 +1301,7 @@ class PokerStarsCollection(object):
             for game in self.games_data.values()
             if winner in game.winners
         }
+
     def save_to_csv_files(self, file_root):
         """
         A function to save all dataframes to csv files ready for reading
@@ -1313,6 +1311,7 @@ class PokerStarsCollection(object):
         Returns:
 
         """
+
     def save_data(self, save_file):
         import pyarrow as pa
         import pyarrow.parquet as pq
@@ -1329,5 +1328,16 @@ class PokerStarsCollection(object):
             table = pa.Table.from_pandas(save_data)
             pq.write_table(table, save_file)
         else:
+            table_general = pa.Table.from_pandas(self.full_data["General"])
             table_pre_flop = pa.Table.from_pandas(self.full_data["Pre-Flop"])
+            table_flop = pa.Table.from_pandas(self.full_data["Flop"])
+            table_turn = pa.Table.from_pandas(self.full_data["Turn"])
+            table_river = pa.Table.from_pandas(self.full_data["River"])
+            table_cards = pa.Table.from_pandas(self.full_data["Card Information"])
+
+            pq.write_table(table_general, save_file + "_general.parquet")
             pq.write_table(table_pre_flop, save_file + "_pre-flop.parquet")
+            pq.write_table(table_flop, save_file + "_flop.parquet")
+            pq.write_table(table_turn, save_file + "_turn.parquet")
+            pq.write_table(table_river, save_file + "_river.parquet")
+            pq.write_table(table_cards, save_file + "_card_info.parquet")

@@ -282,7 +282,7 @@ class SingleBoardAnalysis(object):
 
             data_dict["Has Straight"] = True
             data_dict["Straight Ranking"] = straight_ranking
-            data_dict["Straight Cards"] = straight_cards
+            data_dict["Straight Cards"] = [x.string for x in straight_cards]
 
             if all([x in all_cards[:-2] for x in straight_cards]):
                 data_dict["Straight Street"] = "Flop"
@@ -298,7 +298,7 @@ class SingleBoardAnalysis(object):
 
             data_dict["Has Flush"] = True
             data_dict["Flush Ranking"] = flush_ranking
-            data_dict["Flush Cards"] = flush_cards
+            data_dict["Flush Cards"] = [x.string for x in flush_cards]
 
             if all([x in all_cards[:-2] for x in flush_cards]):
                 data_dict["Flush Street"] = "Flop"
@@ -314,7 +314,7 @@ class SingleBoardAnalysis(object):
             elif flush == 8:
                 data_dict["Has Straight Flush"] = True
                 data_dict["Straight Flush Ranking"] = flush_ranking
-                data_dict["Straight Flush Cards"] = flush_cards
+                data_dict["Straight Flush Cards"] = [x.string for x in flush_cards]
 
         # check for all x-of-a-kind
         four_of_a_kind, three_of_a_kind, pairs = self.n_check(all_cards)
@@ -334,7 +334,7 @@ class SingleBoardAnalysis(object):
             )
 
             four_of_a_kind_cards.append(kickers)
-            data_dict["Four-Of-A-Kind Cards"] = four_of_a_kind_cards
+            data_dict["Four-Of-A-Kind Cards"] = [x.string for x in four_of_a_kind_cards]
             if not data_dict["Has Royal Flush"] or data_dict["Has Straight Flush"]:
                 data_dict["Best Hand"] = four_of_a_kind_cards
 
@@ -360,7 +360,7 @@ class SingleBoardAnalysis(object):
                 key=lambda x: [a.value for a in full_house_cards].count(x.value),
                 reverse=True,
             )
-            data_dict["Full House Cards"] = full_house_cards
+            data_dict["Full House Cards"] = [x.string for x in full_house_cards]
 
         elif three_of_a_kind:
             data_dict["Has Three-Of-A-Kind"] = True
@@ -382,7 +382,7 @@ class SingleBoardAnalysis(object):
             else:
                 data_dict["Three-Of-A-Kind Street"] = "River"
 
-            data_dict["Three-Of-A-Kind Cards"] = three_of_a_kind_cards + kickers
+            data_dict["Three-Of-A-Kind Cards"] = [x.string for x in three_of_a_kind_cards] + [x.string for x in kickers]
 
         elif pairs:
             if len(pairs) > 1:
@@ -407,7 +407,7 @@ class SingleBoardAnalysis(object):
                 else:
                     data_dict["Two Pair Street"] = "River"
 
-                data_dict["Two Pair Cards"] = two_pair_cards + kickers
+                data_dict["Two Pair Cards"] = [x.string for x in two_pair_cards] + [x.string for x in kickers]
 
             else:
                 data_dict["Has One Pair"] = True
@@ -427,7 +427,7 @@ class SingleBoardAnalysis(object):
                 else:
                     data_dict["One Pair Street"] = "River"
 
-                data_dict["One Pair Cards"] = one_pair_cards + kickers
+                data_dict["One Pair Cards"] = [x.string for x in one_pair_cards] + [x.string for x in kickers]
         else:
             data_dict["Has High Card"] = True
             kickers = sorted(
