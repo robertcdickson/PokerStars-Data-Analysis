@@ -23,7 +23,8 @@ full_column_headings = [
     "Turn Card",
     "River Card",
 
-    "Winners",
+    # "Winners",
+    "Is Winner",
     "Winning Hands",
     "Winning Rankings",
 
@@ -326,6 +327,7 @@ full_column_headings = [
 
     "Best Ranking",
 
+    "Player Profit",
 
     # "Pot Increase Pre-Flop",
     # "Pot Increase Flop",

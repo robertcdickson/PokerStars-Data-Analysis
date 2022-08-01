@@ -109,7 +109,6 @@ class PokerStarsGame(object):
 
         self._big_blind = self.get_blind("BB")
         self._small_blind = self.get_blind("SB")
-
         self.chip_leader = self.data["General"].index[
             self.data["General"]["Chips ($)"] == self.data["General"]["Chips ($)"].max()
             ].to_list()
@@ -168,7 +167,7 @@ class PokerStarsGame(object):
             "Flop Card 3": self.flop_card_3,
             "Turn Card": self.turn_card,
             "River Card": self.river_card,
-            "Winners": str(self.winners),
+            # "Winners": str(self.winners),
             "Winning Hands": str(self.winning_hands),
             "Winning Rankings": str(self.winning_rankings),
         }
@@ -1238,22 +1237,14 @@ class PokerStarsCollection(object):
 
             events_df["General"]["Final Pot"] = events_df["River"]["River Final Pot ($)"]
 
-        data_dict["General"]["Player Profit"] = np.where(data_dict["General"]["Player Name"].isin(winners),
-                                                         data_dict["General"]["Final Pot"],
-                                                         data_dict["General"]["Total Added to Pot"])
+        data_dict["General"]["Is Winner"] = np.where(data_dict["General"]["Player Name"].isin(winners),
+                                                     True,
+                                                     False)
 
-        # these columns seem a bit useless so adding this as a temporary fix
-        """events_df = events_df.drop(
-            [
-                "index",
-                "Seat Number",
-                "Play Order",
-                "Betting Order",
-                "Is Big Blind",
-                "Is Small Blind",
-            ],
-            axis=1,
-        )"""
+        data_dict["General"]["Player Profit"] = np.where(data_dict["General"]["Is Winner"],
+                                                         data_dict["General"]["Final Pot"],
+                                                         -data_dict["General"]["Total Added to Pot"])
+
         game = PokerStarsGame(
             [item for sublist in game_text.values() for item in sublist],
             events_df,
