@@ -119,7 +119,7 @@ class PokerStarsGame(object):
         self.player_names = None
         self.player_final_action = None
 
-        self.final_pot = self.get_final_pot()
+        self.final_pot, self.rake = self.get_final_pot()
 
         self._all_column_labels = full_column_headings
 
@@ -162,6 +162,8 @@ class PokerStarsGame(object):
             "Date": self.date,
             "Time": self.time,
             "Max Players": self.max_players,
+            "Rake": self.rake,
+            "Final Pot": self.final_pot,
             "Table Name": self.table_name,
             "Flop Card 1": self.flop_card_1,
             "Flop Card 2": self.flop_card_2,
@@ -244,9 +246,10 @@ class PokerStarsGame(object):
                 Final pot size in dollars
         """
         for line in self.game_text:
-            if "collected" in line:
-                pot = float(line.split("$")[-1].split()[0].strip("()"))
-                return pot
+            if "Total pot" in line:
+                pot = float(line.split("|")[0].split()[2].strip("()$"))
+                rake = float(line.split("|")[1].split()[1].strip("()$"))
+                return pot, rake
 
     def get_data_from_text(self):
         """
@@ -798,7 +801,7 @@ class PokerStarsCollection(object):
 
             elif (
                     ":" in line
-            ):  # I think having this filters out players joining table, disconnecting etc. for speed up
+            ):  # I think having this filters out players joining table, disconnecting etc. for minor speed up
                 player_name = line.split(":")[0]
 
                 if player_name not in data.keys():
@@ -1021,6 +1024,15 @@ class PokerStarsCollection(object):
                         data[player_name]["All In Street"] = play_phase
                         data[player_name]["All In Action"] = raise_type
 
+            if "Uncalled" in line:
+                player_name = line.split(" to ")[-1].strip()
+                if (play_phase == "Pre-Flop" and number_of_raises == 1) or (play_phase != "Pre-Flop" and number_of_raises == 0):
+                    if player_name not in data.keys():
+                        data[player_name] = {}
+                    data[player_name][f"{play_phase} Added to Pot"] = 0.0
+                else:
+                    data[player_name][f"{play_phase} Added to Pot"] -= float(line.split()[2].strip("()$"))
+
         normalised_dict = dict([(k, pd.Series(v)) for k, v in data.items()])
         df = pd.DataFrame(normalised_dict).transpose()
 
@@ -1188,6 +1200,7 @@ class PokerStarsCollection(object):
         )
 
         events_df["General"]["Total Added to Pot"] = events_df["Pre-Flop"]["Pre-Flop Added to Pot"]
+        events_df["General"]["Final Pot"] = events_df["Pre-Flop"]["Pre-Flop Final Pot ($)"]
         # Flop
         if "Flop" in data_dict.keys():
             events_df["Flop"]["Flop Final Pot ($)"] = (
@@ -1199,7 +1212,9 @@ class PokerStarsCollection(object):
             if not data_dict["Flop"].empty:
                 events_df["General"]["Total Added to Pot"] += events_df["Flop"]["Flop Added to Pot"]
 
-        # Turn
+            events_df["General"]["Final Pot"] = events_df["Flop"]["Flop Final Pot ($)"]
+
+            # Turn
         if "Turn" in data_dict.keys():
             events_df["Turn"]["Turn Final Pot ($)"] = (
                     events_df["Turn"]["Pot Increase Turn"] + events_df["Flop"]["Flop Final Pot ($)"]
@@ -1209,6 +1224,8 @@ class PokerStarsCollection(object):
             )
             if not data_dict["Turn"].empty:
                 events_df["General"]["Total Added to Pot"] += events_df["Turn"]["Turn Added to Pot"]
+
+            events_df["General"]["Final Pot"] = events_df["Turn"]["Turn Final Pot ($)"]
 
         # River
         if "River" in data_dict.keys():
@@ -1220,6 +1237,12 @@ class PokerStarsCollection(object):
             )
             if not data_dict["River"].empty:
                 events_df["General"]["Total Added to Pot"] += events_df["River"]["River Added to Pot"]
+
+            events_df["General"]["Final Pot"] = events_df["River"]["River Final Pot ($)"]
+
+        data_dict["General"]["Player Profit"] = np.where(data_dict["General"]["Player Name"].isin(winners),
+                                                         data_dict["General"]["Final Pot"],
+                                                         data_dict["General"]["Total Added to Pot"])
 
         # these columns seem a bit useless so adding this as a temporary fix
         """events_df = events_df.drop(

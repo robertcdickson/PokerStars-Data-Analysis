@@ -27,6 +27,9 @@ full_column_headings = [
     "Winning Hands",
     "Winning Rankings",
 
+    "Final Pot",
+    "Rake",
+
     # pre-flop
     "Added to Pot Pre-Deal",
     "Check Pre-Flop",
