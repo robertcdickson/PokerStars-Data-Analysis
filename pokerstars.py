@@ -145,9 +145,7 @@ class PokerStarsGame(object):
             self.table_name = self.game_text[1].split("'")[1]
 
         self._values_for_all_df = {
-            "Game Type": self.game_type,
             "Game Code": self.game_code,
-            "Stakes": self.stakes,
             "Flop Card 1": self.flop_card_1,
             "Flop Card 2": self.flop_card_2,
             "Flop Card 3": self.flop_card_3,

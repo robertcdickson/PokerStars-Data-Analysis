@@ -31,7 +31,7 @@ full_column_headings = [
     "Rake",
 
     # pre-flop
-    "Added to Pot Pre-Deal",
+    # "Added to Pot Pre-Deal",
     "Check Pre-Flop",
     "Facing Pre-Flop Limp",
     "Pre-Flop Limp",
