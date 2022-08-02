@@ -413,6 +413,7 @@ class PokerStarsCollection(object):
                 Max number of games to be processed.
         """
 
+        self.rake = 0.0
         self._suits = {"c": "clubs", "s": "spades", "d": "diamonds", "h": "hearts"}
 
         self._values = {
@@ -1029,6 +1030,7 @@ class PokerStarsCollection(object):
                     data[player_name][f"{play_phase} Added to Pot"] = 0.0
                 else:
                     data[player_name][f"{play_phase} Added to Pot"] -= float(line.split()[2].strip("()$"))
+                    pot -= float(line.split()[2].strip("()$"))
 
         normalised_dict = dict([(k, pd.Series(v)) for k, v in data.items()])
         df = pd.DataFrame(normalised_dict).transpose()
@@ -1107,7 +1109,9 @@ class PokerStarsCollection(object):
                 a = re.sub("\(.*\)", "", line.split("collected")[0])
                 b = re.sub("Seat [0-9]: ", "", a).strip()
                 winners.append(b)
-
+            if "Rake" in line:
+                print(line)
+                self.rake = float(line.split()[-1].lstrip("$"))
         if self.hero not in data.keys():
             data[self.hero] = str(self._hero_cards)
 
@@ -1240,9 +1244,9 @@ class PokerStarsCollection(object):
         data_dict["General"]["Is Winner"] = np.where(data_dict["General"]["Player Name"].isin(winners),
                                                      True,
                                                      False)
-
+        print(data_dict["General"]["Final Pot"])
         data_dict["General"]["Player Profit"] = np.where(data_dict["General"]["Is Winner"],
-                                                         data_dict["General"]["Final Pot"],
+                                                         data_dict["General"]["Final Pot"] - self.rake,
                                                          -data_dict["General"]["Total Added to Pot"])
 
         game = PokerStarsGame(
