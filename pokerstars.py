@@ -708,9 +708,9 @@ class PokerStarsCollection(object):
                 data_dict["Chips ($)"].append(chips)
 
             if "posts small blind" in line:
-                self._small_blind_player = line.split(":")[0].replace(" ", "")
+                self._small_blind_player = line.rsplit(":")[0].replace(" ", "")
             if "posts big blind" in line:
-                self._big_blind_player = line.split(":")[0].replace(" ", "")
+                self._big_blind_player = line.rsplit(":")[0].replace(" ", "")
 
         # renumber seat numbers for ordering of play
         new_seat_order = [i for i in range(1, len(data_dict["Seat Number"]) + 1)]
@@ -785,6 +785,7 @@ class PokerStarsCollection(object):
             # Dealt should only be shown for hero!
             if "Dealt" in line:
                 x = line.split()
+
                 player_name = x[2].replace(" ", "")
                 cards = [x[3].lstrip("["), x[4].rstrip("]")]
 
@@ -800,7 +801,22 @@ class PokerStarsCollection(object):
             elif (
                     ":" in line
             ):  # I think having this filters out players joining table, disconnecting etc. for minor speed up
-                player_name = line.split(":")[0]
+
+                if "Uncalled" in line:
+                    player_name = line.split(" to ")[-1].strip()
+                    if (play_phase == "Pre-Flop" and number_of_raises == 1) or (
+                            play_phase != "Pre-Flop" and number_of_raises == 0):
+                        if player_name not in data.keys():
+                            data[player_name] = {}
+                        data[player_name][f"{play_phase} Added to Pot"] = 0.0
+                    else:
+                        print(f"FIRST: {player_name}")
+                        print(f"SECOND: {data.keys()}")
+                        data[player_name][f"{play_phase} Added to Pot"] -= float(line.split()[2].strip("()$"))
+                        pot -= float(line.split()[2].strip("()$"))
+                    continue
+
+                player_name = line.rsplit(":", 1)[0]
 
                 if player_name not in data.keys():
                     data[player_name] = {}
@@ -808,7 +824,7 @@ class PokerStarsCollection(object):
                 if f"{play_phase} Added to Pot" not in data[player_name].keys():
                     data[player_name][f"{play_phase} Added to Pot"] = 0.0
 
-                action = line.split(":")[1].rstrip()
+                action = line.rsplit(":")[1].rstrip()
 
                 if (
                         play_phase == "Pre-Flop"
@@ -1022,16 +1038,6 @@ class PokerStarsCollection(object):
                         data[player_name]["All In Street"] = play_phase
                         data[player_name]["All In Action"] = raise_type
 
-            if "Uncalled" in line:
-                player_name = line.split(" to ")[-1].strip()
-                if (play_phase == "Pre-Flop" and number_of_raises == 1) or (play_phase != "Pre-Flop" and number_of_raises == 0):
-                    if player_name not in data.keys():
-                        data[player_name] = {}
-                    data[player_name][f"{play_phase} Added to Pot"] = 0.0
-                else:
-                    data[player_name][f"{play_phase} Added to Pot"] -= float(line.split()[2].strip("()$"))
-                    pot -= float(line.split()[2].strip("()$"))
-
         normalised_dict = dict([(k, pd.Series(v)) for k, v in data.items()])
         df = pd.DataFrame(normalised_dict).transpose()
 
@@ -1109,7 +1115,7 @@ class PokerStarsCollection(object):
                 a = re.sub("\(.*\)", "", line.split("collected")[0])
                 b = re.sub("Seat [0-9]: ", "", a).strip()
                 winners.append(b)
-            if "Rake" in line:
+            if "| Rake" in line:
                 print(line)
                 self.rake = float(line.split()[-1].lstrip("$"))
         if self.hero not in data.keys():
@@ -1244,7 +1250,6 @@ class PokerStarsCollection(object):
         data_dict["General"]["Is Winner"] = np.where(data_dict["General"]["Player Name"].isin(winners),
                                                      True,
                                                      False)
-        print(data_dict["General"]["Final Pot"])
         data_dict["General"]["Player Profit"] = np.where(data_dict["General"]["Is Winner"],
                                                          data_dict["General"]["Final Pot"] - self.rake,
                                                          -data_dict["General"]["Total Added to Pot"])
