@@ -810,8 +810,6 @@ class PokerStarsCollection(object):
                             data[player_name] = {}
                         data[player_name][f"{play_phase} Added to Pot"] = 0.0
                     else:
-                        print(f"FIRST: {player_name}")
-                        print(f"SECOND: {data.keys()}")
                         data[player_name][f"{play_phase} Added to Pot"] -= float(line.split()[2].strip("()$"))
                         pot -= float(line.split()[2].strip("()$"))
                     continue
@@ -1116,7 +1114,6 @@ class PokerStarsCollection(object):
                 b = re.sub("Seat [0-9]: ", "", a).strip()
                 winners.append(b)
             if "| Rake" in line:
-                print(line)
                 self.rake = float(line.split()[-1].lstrip("$"))
         if self.hero not in data.keys():
             data[self.hero] = str(self._hero_cards)
