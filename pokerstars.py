@@ -1299,6 +1299,14 @@ class PokerStarsCollection(object):
             player_data = SingleBoardAnalysis(new_hand, table_cards).data_analysis
             data[player].update(player_data)
 
+            # check if cards in players hand are in the best combination of cards
+            data[player]["Number of Best Cards in Hand"] = 0
+            if data[player]["Best Cards"] is not None:
+                if data[player]["Player Card 1"] in data[player]["Best Cards"]:
+                    data[player]["Number of Best Cards in Hand"] += 1
+                if data[player]["Player Card 2"] in data[player]["Best Cards"]:
+                    data[player]["Number of Best Cards in Hand"] += 1
+
         df = pd.DataFrame(data).transpose()
         return df
 

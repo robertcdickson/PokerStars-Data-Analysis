@@ -251,11 +251,15 @@ class SingleBoardAnalysis(object):
             "One Pair Street": None,
 
             "Best Ranking": None,
+            "Best Cards": None,
 
         }
 
         # combine players cards and table cards to give rankable list
         all_cards = self.in_play_cards
+
+        # ranking combination
+        ranking = 0
 
         # check for straight
         (
@@ -266,7 +270,7 @@ class SingleBoardAnalysis(object):
         ) = self.straight_check(all_cards)
 
         if straight_cards:
-
+            ranking = 4
             final_straight_cards = []
 
             for card in straight_cards:
@@ -283,6 +287,7 @@ class SingleBoardAnalysis(object):
             data_dict["Has Straight"] = True
             data_dict["Straight Ranking"] = straight_ranking
             data_dict["Straight Cards"] = [x.string for x in straight_cards]
+            data_dict["Best Cards"] = data_dict["Straight Cards"]
 
             if all([x in all_cards[:-2] for x in straight_cards]):
                 data_dict["Straight Street"] = "Flop"
@@ -295,10 +300,11 @@ class SingleBoardAnalysis(object):
         flush_cards, flush, flush_ranking = self.flush_check(all_cards, straight_cards)
 
         if flush:
-
+            ranking = 5
             data_dict["Has Flush"] = True
             data_dict["Flush Ranking"] = flush_ranking
             data_dict["Flush Cards"] = [x.string for x in flush_cards]
+            data_dict["Best Cards"] = data_dict["Flush Cards"]
 
             if all([x in all_cards[:-2] for x in flush_cards]):
                 data_dict["Flush Street"] = "Flop"
@@ -310,11 +316,17 @@ class SingleBoardAnalysis(object):
             # This is going to have a weird edge case when a flopped flush turns in to a straight flush need to add the
             # if all bit above here for that
             if flush == 9:
+                ranking = 9
                 data_dict["Has Royal Flush"] = True
+                data_dict["Straight Flush Cards"] = [x.string for x in flush_cards]
+
             elif flush == 8:
                 data_dict["Has Straight Flush"] = True
                 data_dict["Straight Flush Ranking"] = flush_ranking
                 data_dict["Straight Flush Cards"] = [x.string for x in flush_cards]
+                if ranking < 8:
+                    ranking = 8
+                data_dict["Best Cards"] = data_dict["Straight Flush Cards"]
 
         # check for all x-of-a-kind
         four_of_a_kind, three_of_a_kind, pairs = self.n_check(all_cards)
@@ -335,11 +347,13 @@ class SingleBoardAnalysis(object):
 
             four_of_a_kind_cards.append(kickers)
             data_dict["Four-Of-A-Kind Cards"] = [x.string for x in four_of_a_kind_cards]
-            if not data_dict["Has Royal Flush"] or data_dict["Has Straight Flush"]:
-                data_dict["Best Hand"] = four_of_a_kind_cards
+            if ranking < 7:
+                ranking = 7
+                data_dict["Best Cards"] = data_dict["Four-Of-A-Kind Cards"]
 
         # full house
         elif pairs and three_of_a_kind:
+
             data_dict["Has Full House"] = True
             full_house_cards = [
                 card
@@ -361,8 +375,12 @@ class SingleBoardAnalysis(object):
                 reverse=True,
             )
             data_dict["Full House Cards"] = [x.string for x in full_house_cards]
+            if ranking < 6:
+                ranking = 6
+                data_dict["Best Cards"] = data_dict["Full House Cards"]
 
         elif three_of_a_kind:
+
             data_dict["Has Three-Of-A-Kind"] = True
             three_of_a_kind_cards = [
                 card for card in all_cards if card.value == max(three_of_a_kind)
@@ -383,6 +401,9 @@ class SingleBoardAnalysis(object):
                 data_dict["Three-Of-A-Kind Street"] = "River"
 
             data_dict["Three-Of-A-Kind Cards"] = [x.string for x in three_of_a_kind_cards] + [x.string for x in kickers]
+            if ranking < 3:
+                rankin = 3
+                data_dict["Best Cards"] = data_dict["Three-Of-A-Kind Cards"]
 
         elif pairs:
             if len(pairs) > 1:
@@ -408,6 +429,9 @@ class SingleBoardAnalysis(object):
                     data_dict["Two Pair Street"] = "River"
 
                 data_dict["Two Pair Cards"] = [x.string for x in two_pair_cards] + [x.string for x in kickers]
+                if ranking < 2:
+                    ranking = 2
+                    data_dict["Best Cards"] = data_dict["Two Pair Cards"]
 
             else:
                 data_dict["Has One Pair"] = True
@@ -428,6 +452,9 @@ class SingleBoardAnalysis(object):
                     data_dict["One Pair Street"] = "River"
 
                 data_dict["One Pair Cards"] = [x.string for x in one_pair_cards] + [x.string for x in kickers]
+                if ranking < 1:
+                    ranking = 1
+                    data_dict["Best Cards"] = [x.string for x in one_pair_cards] + [x.string for x in kickers]
         else:
             data_dict["Has High Card"] = True
             kickers = sorted(
@@ -435,6 +462,8 @@ class SingleBoardAnalysis(object):
             )
             data_dict["High Card Cards"] = kickers
             kicker_values = [x.value for x in kickers]
+            if ranking == 0:
+                data_dict["Best Cards"] = data_dict["One Pair Cards"]
 
         for key in data_dict:
             if "Has" in key:

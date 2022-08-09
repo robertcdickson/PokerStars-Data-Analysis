@@ -297,35 +297,35 @@ full_column_headings = [
     "Has Straight Flush",
     "Has Royal Flush",
 
-    "Straight Flush Cards",
-    "Four-Of-A-Kind Cards"
-    
-    
+    # "Straight Flush Cards",
+    # "Four-Of-A-Kind Cards"
+
     "Full House Ranking",
-    "Full House Cards",
+    # "Full House Cards",
     "Full House Street",
 
     "Flush Ranking",
-    "Flush Cards",
+    # "Flush Cards",
     "Flush Street",
 
     "Straight Ranking",
-    "Straight Cards",
+    # "Straight Cards",
     "Straight Street",
 
     "Three-Of-A-Kind Ranking",
-    "Three-Of-A-Kind Cards",
+    # "Three-Of-A-Kind Cards",
     "Three-Of-A-Kind Street",
 
     "Two Pair Ranking",
-    "Two Pair Cards",
+    # '"Two Pair Cards",
     "Two Pair Street",
 
     "One Pair Ranking",
-    "One Pair Cards",
+    # "One Pair Cards",
     "One Pair Street",
 
     "Best Ranking",
+    "Number of Best Cards in Hand",
 
     "Player Profit",
 
