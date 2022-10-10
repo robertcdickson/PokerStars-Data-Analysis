@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from typing import List
 
-from src.poker_main import *
+from poker_main import *
 from data_catagories import full_column_headings
 from board_analysis import SingleBoardAnalysis
 

@@ -1,5 +1,5 @@
 import itertools
-from src.poker_main import *
+from poker_main import *
 
 
 class SingleBoardAnalysis(object):
@@ -469,5 +469,5 @@ class SingleBoardAnalysis(object):
             if "Has" in key:
                 if data_dict[key] is True:
                     data_dict["Best Ranking"] = key[4:]
-
+                    break
         return data_dict
