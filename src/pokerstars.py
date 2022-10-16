@@ -1180,14 +1180,6 @@ class PokerStarsCollection(object):
             data_dict["summary"], table_cards
         )
 
-        """self._search_dict = {
-            "Pre-Flop": "HOLE CARDS",
-            "Flop": "FLOP",
-            "Turn": "TURN",
-            "River": "RIVER",
-            "Showdown": "SHOW DOWN",
-        }"""
-
         # collect data
         events_df = data_dict
         for x in events_df.keys():
