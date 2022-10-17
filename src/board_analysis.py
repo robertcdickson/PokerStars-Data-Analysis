@@ -154,7 +154,7 @@ class SingleBoardAnalysis(object):
                 [card for card in cards if card.suit == flush_suit],
                 key=lambda x: x.value,
                 reverse=True,
-            )[0:5]
+            )
 
             # check for any straight flush
             if straight_cards:
