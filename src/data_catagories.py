@@ -324,6 +324,10 @@ full_column_headings = [
     # "One Pair Cards",
     "One Pair Street",
 
+    "Flush Draw Flop",
+    "Flush Draw Turn",
+    "Flush Draw Street",
+
     "Best Ranking",
     "Number of Best Cards in Hand",
 

@@ -110,6 +110,24 @@ class SingleBoardAnalysis(object):
         return None, None, None, None
 
     @staticmethod
+    def flush_draw_check(cards):
+
+        flop_flush_draw = False
+        turn_flush_draw = False
+
+        flop_card_suits = [card.suit for card in cards[0:5]]
+        flop_counts = Counter(flop_card_suits)
+
+        turn_card_suits = [card.suit for card in cards[0:6]]
+        turn_counts = Counter(turn_card_suits)
+
+        if any(val == 4 for val in flop_counts.values()):
+            flop_flush_draw = True
+        if any(val == 4 for val in turn_counts.values()):
+            turn_flush_draw = True
+        return flop_flush_draw, turn_flush_draw
+
+    @staticmethod
     def flush_check(cards, straight_cards=None):
         """
         Checks for a flush in a given set of cards
@@ -253,6 +271,10 @@ class SingleBoardAnalysis(object):
             "Best Ranking": None,
             "Best Cards": None,
 
+            "Flush Draw Flop": None,
+            "Flush Draw Turn": None,
+            "Flush Draw Street": None,
+
         }
 
         # combine players cards and table cards to give rankable list
@@ -298,6 +320,10 @@ class SingleBoardAnalysis(object):
 
         # check for flush or straight flush
         flush_cards, flush, flush_ranking = self.flush_check(all_cards, straight_cards)
+        flush_draw_flop, flush_draw_turn = self.flush_draw_check(all_cards)
+        data_dict["Flush Draw Flop"] = flush_draw_flop
+        data_dict["Flush Draw Turn"] = flush_draw_turn
+        data_dict["Flush Draw Street"] = "Flop" if flush_draw_flop is True else "Turn" if flush_draw_turn else None
 
         if flush:
             ranking = 5
@@ -327,6 +353,9 @@ class SingleBoardAnalysis(object):
                 if ranking < 8:
                     ranking = 8
                 data_dict["Best Cards"] = data_dict["Straight Flush Cards"]
+
+        if flush_draw_flop:
+            data_dict["Flush Draw Flop"] = True
 
         # check for all x-of-a-kind
         four_of_a_kind, three_of_a_kind, pairs = self.n_check(all_cards)
