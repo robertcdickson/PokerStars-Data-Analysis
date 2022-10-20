@@ -9,6 +9,15 @@ from poker_main import *
 from data_catagories import full_column_headings
 from board_analysis import SingleBoardAnalysis
 
+"""
+TODO:
+
+Draws on flop and turn
+Rankings on flop and turn (currently only done on river)
+Relative position in hand
+
+"""
+
 
 class PokerStarsGame(object):
     """
@@ -1180,14 +1189,6 @@ class PokerStarsCollection(object):
             data_dict["summary"], table_cards
         )
 
-        """self._search_dict = {
-            "Pre-Flop": "HOLE CARDS",
-            "Flop": "FLOP",
-            "Turn": "TURN",
-            "River": "RIVER",
-            "Showdown": "SHOW DOWN",
-        }"""
-
         # collect data
         events_df = data_dict
         for x in events_df.keys():
@@ -1205,6 +1206,7 @@ class PokerStarsCollection(object):
 
         events_df["General"]["Total Added to Pot"] = events_df["Pre-Flop"]["Pre-Flop Added to Pot"]
         events_df["General"]["Final Pot"] = events_df["Pre-Flop"]["Pre-Flop Final Pot ($)"]
+
         # Flop
         if "Flop" in data_dict.keys():
             events_df["Flop"]["Flop Final Pot ($)"] = (
@@ -1295,7 +1297,6 @@ class PokerStarsCollection(object):
             else:
                 data[player]["Suited Hand"] = False
 
-            cards = table_cards
             player_data = SingleBoardAnalysis(new_hand, table_cards).data_analysis
             data[player].update(player_data)
 
