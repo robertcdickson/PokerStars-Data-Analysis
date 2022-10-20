@@ -110,6 +110,54 @@ class SingleBoardAnalysis(object):
         return None, None, None, None
 
     @staticmethod
+    def straight_draw_check(cards):
+        """
+        Checks for a straight in a set of cards
+
+        Args:
+            cards: list
+                cards to check for a straight combination in
+
+        Returns:
+
+        """
+
+        card_values = [x.value for x in cards]
+        if 14 in card_values:
+            card_values.append(1)
+
+        card_values_flop = card_values[0:5]
+        card_values_turn = card_values[0:6]
+        if len(card_values_flop) < 5 or len(card_values_turn) < 6:
+            return 0, 0, 0, 0
+
+        oesd_flop = [
+            sorted(combo)
+            for combo in itertools.combinations(card_values_flop, 4) if max(combo) - min(combo) == 3 and 14 not in combo and len(set(combo)) == 4
+        ]
+
+        oesd_turn = [
+            sorted(combo)
+            for combo in itertools.combinations(card_values_turn, 4) if max(combo) - min(combo) == 3 and 14 not in combo and len(set(combo)) == 4
+        ]
+
+        gutshot_flop = [
+            sorted(combo) for combo in itertools.combinations(card_values_flop, 4) if
+            (max(combo) - min(combo) == 4 and len(set(combo)) == 4) or sorted(combo) == [1, 2, 3, 4] or sorted(combo) == [11, 12, 13, 14]
+        ]
+
+        gutshot_turn = [
+            sorted(combo) for combo in itertools.combinations(card_values_turn, 4) if
+            (max(combo) - min(combo) == 4 and len(set(combo)) == 4) or sorted(combo) == [1, 2, 3, 4] or sorted(combo) == [11, 12, 13, 14]
+        ]
+        n_oesd_flop = len(oesd_flop)
+        n_oesd_turn = len(oesd_turn)
+        n_gutshot_flop = len(gutshot_flop)
+        n_gutshot_turn = len(gutshot_turn)
+
+        return n_oesd_flop, n_oesd_turn, n_gutshot_flop, n_gutshot_turn
+
+    @staticmethod
     def flush_draw_check(cards):
 
         flop_flush_draw = False
@@ -271,6 +319,11 @@ class SingleBoardAnalysis(object):
             "Best Ranking": None,
             "Best Cards": None,
 
+            "Straight Draw Flop": None,
+            "Straight Draw Turn": None,
+            "Gutshot Straight Draw Flop": None,
+            "Gutshot Straight Draw Turn": None,
+
             "Flush Draw Flop": None,
             "Flush Draw Turn": None,
             "Flush Draw Street": None,
@@ -317,6 +370,14 @@ class SingleBoardAnalysis(object):
                 data_dict["Straight Street"] = "Turn"
             else:
                 data_dict["Straight Street"] = "River"
+
+        # check for straight draw
+        n_oesd_flop, n_oesd_turn, n_gutshot_flop, n_gutshot_turn = self.straight_draw_check(all_cards)
+
+        data_dict["Straight Draw Flop"] = True if n_oesd_flop else False
+        data_dict["Straight Draw Turn"] = True if n_oesd_turn else False
+        data_dict["Gutshot Straight Draw Flop"] = True if n_gutshot_flop else False
+        data_dict["Gutshot Straight Draw Turn"] = True if n_gutshot_turn else False
 
         # check for flush or straight flush
         flush_cards, flush, flush_ranking = self.flush_check(all_cards, straight_cards)
