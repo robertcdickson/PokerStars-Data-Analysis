@@ -84,13 +84,20 @@ UPDATE card_info
 SET "Player Cards"= (CASE
                          WHEN SUBSTRING("Player Card 1", 0, 2) = SUBSTRING("Player Card 2", 0, 2)
                              THEN CONCAT("Player Card 1 Value", "Player Card 2 Value")
-                         WHEN SUBSTRING("Player Card 1", 1) = SUBSTRING("Player Card 2", 1)
+                         WHEN SUBSTRING("Player Card 1", 2, 1) = SUBSTRING("Player Card 2", 2, 1)
                              THEN CONCAT("Player Card 1 Value", "Player Card 2 Value", 's')
-                         WHEN SUBSTRING("Player Card 1", 1) != SUBSTRING("Player Card 2", 1)
+                         WHEN SUBSTRING("Player Card 1", 2, 1) != SUBSTRING("Player Card 2", 2, 1)
                              THEN CONCAT("Player Card 1 Value", "Player Card 2 Value", 'o')
     END)
 WHERE "Player Card 2 Value" IS NOT NULL;
 
+/* Create new suited/unsuited hand column */
+ALTER TABLE card_info
+    DROP COLUMN "Suited Hand Suit";
 
-SELECT *
-FROM card_info;
+ALTER TABLE card_info
+    ADD COLUMN "Suited Hand Suit" VARCHAR(2);
+
+UPDATE card_info
+SET "Suited Hand Suit"=SUBSTRING("Player Card 1", 2, 1)
+WHERE SUBSTRING("Player Card 1", 2, 1) = SUBSTRING("Player Card 2", 2, 1);
