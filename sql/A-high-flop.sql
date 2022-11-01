@@ -11,12 +11,13 @@ WHERE c."Player Name" != 'Hero'
        c."Flop Card 2" LIKE 'A%'
     OR
        c."Flop Card 3" LIKE 'A%')
-AND c."Three-Of-A-Kind Street"='Flop';
+  AND c."Three-Of-A-Kind Street" = 'Flop';
 
-/* Q1. How often do other players call a flop bet OOP when there is an Ace on the flop? */
+/* Q1. How often do other players check, call a flop bet OOP when there is an Ace on the flop?
 
-/* To answer this we need to know how many A-flops there are with player data that does not include hero*/
+   To answer this we need to know how many A-flops there are with player data that does not include hero*/
 
+/* Check-call hands for players in pool minus hero that reach showdown */
 SELECT g."Position",
        f."Flop Card 1",
        f."Flop Card 2",
@@ -29,7 +30,8 @@ SELECT g."Position",
        f."Called Flop Raise",
        ROUND(f."Called Flop Raise size" / (f."Flop Final Pot ($)" - 2 * f."Called Flop Raise size"),
              1)                                                                       AS "Called Size (% Pot)",
-        f."Flop Final Pot ($)"
+       f."Flop Final Pot ($)"
+
 FROM card_info AS c
          INNER JOIN flop AS f ON f."Player Name" = c."Player Name" AND f."Game Code" = c."Game Code"
          INNER JOIN general AS g ON g."Player Name" = c."Player Name" AND g."Game Code" = c."Game Code"
@@ -40,37 +42,40 @@ WHERE c."Player Name" != 'Hero'
     OR
        c."Flop Card 3" LIKE 'A%')
   AND f."Facing Flop Raise" = 'True'
-  AND f."Called Flop Raise" = 'True';
+  AND f."Called Flop Raise" = 'True'
+  AND f."Check Flop" = 'True';
 
 /* Then want to see those hands which a player check-calls*/
+SELECT c."Best Ranking", 100 * COUNT("Best Ranking") / SUM(COUNT("Best Ranking")) OVER () AS "% of all rankings"
+FROM card_info AS c
+         INNER JOIN flop AS f ON f."Player Name" = c."Player Name" AND f."Game Code" = c."Game Code"
+         INNER JOIN general AS g ON g."Player Name" = c."Player Name" AND g."Game Code" = c."Game Code"
+WHERE c."Player Name" != 'Hero'
+  AND (c."Flop Card 1" LIKE 'A%'
+    OR
+       c."Flop Card 2" LIKE 'A%'
+    OR
+       c."Flop Card 3" LIKE 'A%')
+  AND f."Facing Flop Raise" = 'True'
+  AND f."Called Flop Raise" = 'True'
+  AND f."Check Flop" = 'True'
+GROUP BY c."Best Ranking";
 
+
+/* Now checking what the high card is that players call with */
 SELECT g."Position",
        f."Flop Card 1",
        f."Flop Card 2",
        f."Flop Card 3",
-       f."Turn Card",
-       f."River Card",
-       CONCAT(SUBSTRING(c."Player Card 1", 0, 2), SUBSTRING(c."Player Card 2", 0, 2)) AS "Cards",
-       C."Best Ranking",
+       c."Player Card 1",
+       c."Player Card 2",
+       c."Best Ranking",
        f."Check Flop",
        f."Called Flop Raise",
        ROUND(f."Called Flop Raise size" / (f."Flop Final Pot ($)" - 2 * f."Called Flop Raise size"),
              1)                                                                       AS "Called Size (% Pot)",
-        f."Flop Final Pot ($)"
-FROM card_info AS c
-         INNER JOIN flop AS f ON f."Player Name" = c."Player Name" AND f."Game Code" = c."Game Code"
-         INNER JOIN general AS g ON g."Player Name" = c."Player Name" AND g."Game Code" = c."Game Code"
-WHERE c."Player Name" != 'Hero'
-  AND (c."Flop Card 1" LIKE 'A%'
-    OR
-       c."Flop Card 2" LIKE 'A%'
-    OR
-       c."Flop Card 3" LIKE 'A%')
-  AND f."Facing Flop Raise" = 'True'
-  AND f."Called Flop Raise" = 'True';
+       f."Flop Final Pot ($)"
 
-/* GROUP BY */
-SELECT c."Best Ranking", 100 * COUNT("Best Ranking") / SUM(count("Best Ranking")) OVER()
 FROM card_info AS c
          INNER JOIN flop AS f ON f."Player Name" = c."Player Name" AND f."Game Code" = c."Game Code"
          INNER JOIN general AS g ON g."Player Name" = c."Player Name" AND g."Game Code" = c."Game Code"
@@ -81,8 +86,33 @@ WHERE c."Player Name" != 'Hero'
     OR
        c."Flop Card 3" LIKE 'A%')
   AND f."Facing Flop Raise" = 'True'
-  AND f."Flop Re-raise" = 'True'
-GROUP BY c."Best Ranking";
+  AND f."Called Flop Raise" = 'True'
+  AND f."Check Flop" = 'True'
+  AND c."Best Ranking"='High Card';
+
+/* Hands where player folds */
+SELECT g."Position",
+       f."Flop Card 1",
+       f."Flop Card 2",
+       f."Flop Card 3",
+       f."Check Flop",
+       f."Called Flop Raise",
+       ROUND(f."Flop Raise Size" / (f."Flop Final Pot ($)" - 2 * f."Flop Raise Size"),
+             1)                                                                       AS "Called Size (% Pot)",
+       f."Flop Final Pot ($)"
+
+FROM flop as f
+         INNER JOIN general AS g ON g."Player Name" = f."Player Name" AND g."Game Code" = f."Game Code"
+WHERE f."Player Name" != 'Hero'
+  AND (f."Flop Card 1" LIKE 'A%'
+    OR
+       f."Flop Card 2" LIKE 'A%'
+    OR
+       f."Flop Card 3" LIKE 'A%')
+  AND f."Facing Flop Raise" = 'True'
+  AND f."Fold to Flop Raise" = 'True'
+  AND f."Check Flop" = 'True';
+
 
 
 SELECT *
